@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mucha · Herencia italiana · Santa Fe</title>
+<meta name="description" content="Mucha: panadería, pastelería artesanal y cocina italiana en Mitre y Boulevard Gálvez, Santa Fe. Mirá la carta y reservá tu mesa.">
+<meta name="theme-color" content="#120A09">
+<link rel="canonical" href="https://chatbot-lab-info.github.io/mucha-demo/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Mucha">
+<meta property="og:title" content="Mucha · Reservá tu mesa">
+<meta property="og:description" content="Herencia italiana. Desde el desayuno hasta la 1:30: mirá la carta y reservá tu mesa en un minuto.">
+<meta property="og:url" content="https://chatbot-lab-info.github.io/mucha-demo/">
+<meta property="og:image" content="https://chatbot-lab-info.github.io/mucha-demo/img/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Mucha, herencia italiana: el logo sobre fondo burdeos">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="img/icono-192.png">
+<link rel="preload" href="fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/cormorant-garamond-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/piel.css?v=1">
+<link rel="stylesheet" href="css/web.css?v=1">
+<script>/* el QR de cada mesa apunta a esta misma dirección con ?mesa=CÓDIGO: se lo manda a la app de mesa */
+(function(){var m=location.search.match(/[?&](?:mesa|t)=([A-Za-z0-9]+)/);if(m)location.replace('mesa/?mesa='+m[1]+(/[?&]demo=1/.test(location.search)?'&demo=1':''))})();</script>
+<script>/* tema elegido (día / noche). Sin elección = recorrido del día. Se aplica antes de pintar para que no parpadee */
+(function(){try{var t=localStorage.getItem('mucha-tema');if(t==='dia'||t==='noche')document.documentElement.dataset.fijo=t;if(t==='dia')document.documentElement.dataset.tema='dia'}catch(e){}})();</script>
+<script>/* movimiento: solo si la persona no pidió "reducir animaciones"; si algo falla, el sitio se ve igual (versión estática) */
+(function(){var r=matchMedia('(prefers-reduced-motion: reduce)').matches;if(!r&&!/[?&]quieto=1/.test(location.search)){document.documentElement.classList.add('js-motion');setTimeout(function(){if(!window.Mov||!window.Mov.listo)document.documentElement.classList.remove('js-motion')},5000)}})();</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="estrella" viewBox="0 0 24 24"><path d="M12 0l2 10 10 2-10 2-2 10-2-10L0 12l10-2z" fill="currentColor"/></symbol></svg>
+
+<header class="barra" id="barra">
+  <a class="barra-logo" href="#inicio" aria-label="Mucha, ir al inicio"><img src="img/monograma.png" alt="" width="44" height="44"></a>
+  <nav aria-label="Principal">
+    <a class="nav-link" href="#carta">Carta</a>
+    <a class="nav-link" href="#encontranos">Horarios</a>
+    <div class="tema" role="group" aria-label="Elegir tema de la web">
+      <button type="button" data-t="dia" aria-pressed="false" aria-label="Ver la web de día"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></button>
+      <button type="button" data-t="noche" aria-pressed="false" aria-label="Ver la web de noche"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z"/></svg></button>
+    </div>
+    <a class="btn btn-chico btn-oro" href="#reservar">Reservar</a>
+  </nav>
+</header>
+
+<main id="inicio">
+  <section class="escena" id="escena" aria-label="Mucha, un día entero">
+    <div class="escena-pin" id="pin">
+      <div class="cielo" aria-hidden="true"></div>
+      <div class="luz" aria-hidden="true"></div>
+      <div class="estrellas" id="estrellas" aria-hidden="true"></div>
+      <div class="grano" aria-hidden="true"></div>
+
+      <div class="arco-foto" id="arcoFoto" aria-hidden="true">
+        <div class="f" data-img="img/desayuno.jpg"></div><div class="f" data-img="img/almuerzo.jpg"></div><div class="f" data-img="img/merienda.jpg"></div><div class="f" data-img="img/cena.jpg"></div><div class="f" data-img="img/cocteles.jpg"></div>
+      </div>
+
+      <div class="reloj" id="reloj" aria-hidden="true">
+        <svg class="pista" id="pista"><ellipse class="p2" pathLength="1"/><ellipse class="p1" pathLength="1"/></svg>
+        <span class="astro" id="astro"><i class="sol"></i><i class="luna"></i></span>
+      </div>
+
+      <div class="hero-in" id="hero">
+        <h1 class="marca" aria-label="Mucha, herencia italiana"><span class="marca-n">MUCHA</span><svg class="marca-e" aria-hidden="true"><use href="#estrella"/></svg><span class="marca-l">herencia italiana</span></h1>
+        <div class="hero-cta">
+          <a class="btn btn-oro" href="#reservar">Reservar mesa</a>
+          <a class="btn" href="#carta">Ver la carta</a>
+        </div>
+      </div>
+
+      <div class="momentos" id="momentos">
+        <article class="mom" style="--m-bg:#F3E7D3;--m-ink:#A3333F" aria-labelledby="m1">
+          <span class="mom-hora" data-h="450">07:30</span>
+          <h2 id="m1">Desayuno</h2>
+          <p>Pan de masa madre, medialunas de manteca, croissants y café latte. Panadería y pastelería artesanal, todos los días.</p>
+          <span class="mom-det">Desde las 7:30 de lunes a viernes · 8:30 fines de semana</span>
+        </article>
+        <article class="mom" style="--m-bg:#F1EBDF;--m-ink:#A3333F" aria-labelledby="m2">
+          <span class="mom-hora" data-h="750">12:30</span>
+          <h2 id="m2">Almuerzo</h2>
+          <p>Pastas hechas a mano, risottos y cocina italiana de verdad. La cocina está abierta todo el día.</p>
+          <span class="mom-det">Antipasti · Pastas · Principales · Focaccia</span>
+        </article>
+        <article class="mom" style="--m-bg:#DDA877;--m-ink:#4F1520" aria-labelledby="m3">
+          <span class="mom-hora" data-h="1020">17:00</span>
+          <h2 id="m3">Merienda</h2>
+          <p>Café, croissants, tortas y pastelería artesanal para cortar la tarde.</p>
+          <span class="mom-det">Desayunos y meriendas hasta las 20 h</span>
+        </article>
+        <article class="mom" style="--m-bg:#4A1620;--m-ink:#F1EBDF" aria-labelledby="m4">
+          <span class="mom-hora" data-h="1290">21:30</span>
+          <h2 id="m4">Cena</h2>
+          <p>Antipasti para compartir, pastas fatto a mano y principales. En el salón se reserva; vereda y terraza, por orden de llegada.</p>
+          <span class="mom-det">Reservas para almuerzo y/o cena</span>
+        </article>
+        <article class="mom" style="--m-bg:#150A0B;--m-ink:#F1EBDF" aria-labelledby="m5">
+          <span class="mom-hora" data-h="1470">00:30</span>
+          <h2 id="m5">Cocteles <i>&amp; vinos</i></h2>
+          <p>Spritz, vermús, gin tonics y una carta de vinos para quedarse un rato más.</p>
+          <span class="mom-det">Abierto hasta la 1:30</span>
+          <a class="btn btn-oro mom-cta" href="#reservar">Reservar mesa</a>
+        </article>
+      </div>
+
+      <ol class="prog" id="prog" aria-hidden="true"><li></li><li></li><li></li><li></li><li></li></ol>
+      <a class="hero-abajo" id="abajo" href="#carta" aria-label="Seguir bajando">Un día en Mucha<i></i></a>
+    </div>
+  </section>
+
+  <section class="seccion" id="carta" aria-labelledby="tCarta">
+    <div class="encab reveal"><span class="cap">Cocina italiana</span><h2 class="titulo" id="tCarta">La carta</h2><svg class="est-mini" aria-hidden="true"><use href="#estrella"/></svg><p id="textoInicio"></p></div>
+    <div class="carta-tabs" id="cartaTabs" role="tablist" aria-label="Categorías"></div>
+    <div id="cartaLista" aria-live="polite"><div class="esq" style="height:70px;margin-bottom:14px"></div><div class="esq" style="height:70px;margin-bottom:14px"></div><div class="esq" style="height:70px"></div></div>
+    <p class="carta-nota" id="cartaNota"></p>
+  </section>
+
+  <section class="seccion" id="reservar" aria-labelledby="tRes">
+    <div class="encab reveal"><span class="cap">Guardamos tu lugar</span><h2 class="titulo" id="tRes">Reservá tu mesa</h2><p>En el salón, para almuerzo y/o cena. Vereda y terraza, ambiente climatizado, funcionan por orden de llegada.</p></div>
+    <form class="tarjeta reserva reveal" id="formRes" novalidate>
+      <div class="fila2">
+        <div class="campo"><span id="lPers">Personas</span><div class="paso" role="group" aria-labelledby="lPers"><button type="button" id="menos" aria-label="Menos personas">−</button><b id="pers" aria-live="polite">2</b><button type="button" id="mas" aria-label="Más personas">+</button></div></div>
+        <div class="campo" id="campoFecha"><span id="lFecha">Día</span><input type="date" id="fecha" required></div>
+      </div>
+      <div class="campo"><span id="lHora">Horario</span><div class="horas" id="horas" role="group" aria-labelledby="lHora" aria-live="polite"></div><p class="error" id="eHora" hidden></p></div>
+      <label class="campo"><span>Nombre</span><input id="nombre" autocomplete="name" maxlength="120" required><p class="error" hidden></p></label>
+      <label class="campo"><span>Teléfono</span><input id="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="342 5123456" maxlength="24" required><p class="error" hidden></p></label>
+      <label class="campo"><span>¿Alguna alergia o restricción alimentaria? (opcional)</span><input id="alergia" type="text" maxlength="150" autocomplete="off" placeholder="Ej.: celíaca, alergia al maní"></label>
+      <div class="campo"><span>¿Algo más que tengamos que saber? (opcional)</span>
+        <div class="chips-nota" role="group" aria-label="Avisos frecuentes">
+          <button type="button" data-nota="Cumpleaños. ">Cumpleaños</button>
+          <button type="button" data-nota="Aniversario. ">Aniversario</button>
+        </div>
+        <textarea id="nota" maxlength="200" aria-label="Algo que tengamos que saber" placeholder="Un cumpleaños, un cochecito, una sorpresa…"></textarea></div>
+      <p class="aviso mal" id="eForm" role="alert" hidden></p>
+      <button class="btn btn-oro" type="submit" id="enviar">Reservar</button>
+    </form>
+    <div class="tarjeta reserva" id="okRes" hidden></div>
+  </section>
+
+  <section class="seccion encontranos reveal" id="encontranos" aria-labelledby="tEnc">
+    <span class="m-mark" aria-hidden="true"></span>
+    <h2 class="titulo" id="tEnc">Encontranos</h2>
+    <div class="datos" id="datos"></div>
+    <div class="contactos" id="contactos"></div>
+  </section>
+</main>
+
+<footer class="pie"><span id="pieDemo"></span>Web y sistema de reservas by <a href="https://wa.me/5493425969853" rel="noopener">iNGENIA</a></footer>
+
+<div class="fija" id="fija" role="navigation" aria-label="Accesos rápidos"><a class="btn" href="#carta">Ver la carta</a><a class="btn btn-oro" href="#reservar">Reservar</a></div>
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/vendor/gsap.min.js?v=1"></script>
+<script src="js/vendor/ScrollTrigger.min.js?v=1"></script>
+<script src="js/vendor/lenis.min.js?v=1"></script>
+<script src="js/config.js?v=1"></script>
+<script src="js/demo.js?v=1"></script>
+<script src="js/panel.js?v=1"></script>
+<script src="js/web.js?v=1"></script>
+<script src="js/controles.js?v=1"></script>
+<script src="js/motion.js?v=1"></script>
+</body>
+</html>
