@@ -24,7 +24,12 @@
     if (previa && alActualizar) { fresca.then((d) => { if (d && d.ok) alActualizar(d); }); return previa; }
     return fresca;
   }
-  const porCategoria = (productos) => { const m = new Map(); (productos || []).forEach((p) => { const c = p.categoria || 'Otros'; if (!m.has(c)) m.set(c, []); m.get(c).push(p); }); return m; };
+  const porCategoria = (productos) => {
+    const m = new Map(); (productos || []).forEach((p) => { const c = p.categoria || 'Otros'; if (!m.has(c)) m.set(c, []); m.get(c).push(p); });
+    const ord = ((window.NEGOCIO && window.NEGOCIO.ordenCategorias) || []).map((x) => x.toLowerCase());
+    const pos = (c) => { const i = ord.indexOf(String(c).toLowerCase()); return i < 0 ? 999 : i; };
+    return new Map(Array.from(m.entries()).sort((a, b) => pos(a[0]) - pos(b[0])));
+  };
   const precioDe = (p) => { const pr = (p.presentaciones || []).map((x) => Number(x.precio)).filter((n) => n > 0); return pr.length ? { desde: true, valor: Math.min.apply(null, pr) } : { desde: false, valor: Number(p.precioBase) || 0 }; };
   const whatsappLink = (num, texto) => num ? 'https://wa.me/' + String(num).replace(/\D/g, '') + (texto ? '?text=' + encodeURIComponent(texto) : '') : '';
 

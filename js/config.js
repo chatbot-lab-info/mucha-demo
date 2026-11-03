@@ -4,7 +4,8 @@ window.NEGOCIO = {
   lema: 'Herencia italiana',
   /* URL /exec del panel del cliente (Lanzador → tarjeta «Conexión con la web»). Vacía = modo demostración con una carta de ejemplo. */
   PANEL_URL: 'https://script.google.com/macros/s/AKfycbxTLrafPHotQV5hnt1WxXFQc1KQSCDj9kt-TClMpkSat8FtBIKutXrIscJ0sMqKa2nhXw/exec',
-  whatsapp: '5493425266359',   /* el de sus historias: 342 526 6359 (confirmar) */
+  whatsapp: '5493425266359',   /* confirmado: coincide con el del panel */
+  ordenCategorias: ['Desayunos y meriendas','Desayuno y merienda','Panadería y bollería','Pastelería','Cafetería','Antipasti','Focaccias','Ensaladas','Pastas','Pastas fatto a mano','Principales','Dolci','Infantil y sin TACC','Aperitivos y spritz','Cócteles','Cocteles','Vinos','Licores y whiskies','Bebidas'],
   instagram: 'mucha.sf',
   direccion: 'Mitre y Boulevard Gálvez, Santa Fe',
   horarios: ['Lunes a viernes · 7:30 a 1:30', 'Sábados y domingos · 8:30 a 1:30'],
