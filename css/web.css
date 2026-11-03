@@ -67,7 +67,7 @@ html{scroll-behavior:auto}
 .js-motion .prog{display:flex;flex-direction:column;gap:16px;position:absolute;right:clamp(14px,2.4vw,34px);top:50%;translate:0 -50%;margin:0;padding:0;list-style:none}
 .prog li{width:7px;height:7px;border-radius:50%;border:1px solid var(--tinta);opacity:.5;transition:transform .5s var(--ease),opacity .5s,background-color .5s}
 .prog li.on{background:var(--tinta);opacity:1;transform:scale(1.5)}
-.js-motion .arco-foto.hay{display:block;position:absolute;right:max(3vw,calc(50% - var(--ew)/2 - 13vw));top:50%;translate:0 -50%;width:min(23vw,330px);height:min(62svh,500px);border-radius:999px 999px 16px 16px;overflow:hidden;pointer-events:none;box-shadow:0 30px 80px -30px rgba(0,0,0,.55);border:1px solid rgba(var(--rtin,59,21,25),.25)}
+.js-motion .arco-foto.hay{display:block;position:absolute;right:max(2.5vw,calc(50% - var(--ew)/2 - 13vw));top:50%;translate:0 -50%;width:min(19vw,290px);height:min(62svh,500px);border-radius:999px 999px 16px 16px;overflow:hidden;pointer-events:none;box-shadow:0 30px 80px -30px rgba(0,0,0,.55);border:1px solid rgba(var(--rtin,59,21,25),.25)}
 .arco-foto .f{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transform:scale(1.08)}
 .arco-foto .f:not(.con){display:none}
 
