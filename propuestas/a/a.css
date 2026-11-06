@@ -439,3 +439,9 @@ html[data-res=panel] .ra-dia{flex:1 0 54px;width:auto;min-width:54px}
 @media(max-width:899px){
   html .ra input,html .ra select,html .ra textarea,html[data-res=panel] .ra-c input,html[data-res=panel] .ra-otra input,.res-r input{font-size:16px!important}
 }
+
+/* carga: disco rojo con la M -> se expande -> logo -> el hero se abre desde el centro */
+.load{overflow:hidden;--h:0;-webkit-mask:radial-gradient(circle at 50% 50%,transparent calc(var(--h)*1%),#000 calc(var(--h)*1% + 1px));mask:radial-gradient(circle at 50% 50%,transparent calc(var(--h)*1%),#000 calc(var(--h)*1% + 1px))}
+.load .load-b{opacity:0}
+.load-f{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:#A33340;transform:scale(0);will-change:transform}
+.load .load-w{position:absolute;left:50%;top:50%;width:min(62vw,320px);height:auto;transform:translate(-50%,-50%);opacity:0}

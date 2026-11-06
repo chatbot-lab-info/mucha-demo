@@ -77,23 +77,28 @@
   const nav = $('#nav'), dock = $('#dock'); let listo = false;
   function pre() {
     if (reduce) { $('#load').style.display = 'none'; listo = true; if (X.precargar) X.precargar(3); return; }
-    gsap.set(wmI, { yPercent: 118 }); gsap.set(['#kick', '#sub', '#lead'], { opacity: 0, y: 26 }); gsap.set('#acc', { y: 60, opacity: 0 }); gsap.set('.win', { clipPath: 'inset(100% 0% 0% 0%)' }); gsap.set('.hero-win', { scale: 1.06 }); gsap.set('#nav', { opacity: 0, y: -50 }); gsap.set('.desliza', { opacity: 0 });
+    gsap.set(wmI, { yPercent: 118 }); gsap.set(['#kick', '#sub', '#lead'], { opacity: 0, y: 26 }); gsap.set('#acc', { y: 60, opacity: 0 }); if (desk()) gsap.set('.win', { clipPath: 'inset(100% 0% 0% 0%)' }); gsap.set('.hero-win', { scale: 1.06 }); gsap.set('#nav', { opacity: 0, y: -50 }); gsap.set('.desliza', { opacity: 0 });
   }
   function entrar() {
     const L = $('#load'); if (reduce || !L) { if (lenis) lenis.start(); return; }
-    const tl = gsap.timeline();
-    tl.to('#load img', { opacity: 1, scale: 1, duration: .7, ease: 'power3.out' }, 0).from('#load img', { scale: .8, duration: .7, ease: 'power3.out' }, 0)
-      .to(L, { '--p': 1, duration: 1.0, ease: 'power2.inOut' }, .1)
-      .to('#load .load-b', { opacity: 0, y: -14, duration: .45, ease: 'power2.in' }, 1.25)
-      .to(L, { yPercent: -100, duration: 1.15, ease: 'power4.inOut', onComplete: () => { L.style.display = 'none'; if (lenis) lenis.start(); } }, 1.55)
-      .to('.win', { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.5, ease: 'power4.inOut' }, 1.75)
-      .to('.hero-win', { scale: 1, duration: 2.2, ease: 'power3.out' }, 1.75)
-      .to(wmI, { yPercent: 0, duration: 1.5, stagger: .09, ease: 'power4.out' }, 2.15)
-      .to(['#kick', '#sub', '#lead'], { opacity: 1, y: 0, duration: 1.1, stagger: .12, ease: 'power3.out', clearProps: 'transform' }, 2.45)
-      .to('#acc', { y: 0, opacity: 1, duration: 1.3, ease: 'power4.out', clearProps: 'transform' }, 2.55)
-      .to('#nav', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, 2.7)
-      .to('.desliza', { opacity: 1, duration: 1 }, 3.1)
-      .add(() => { listo = true; sync(true); if (X.precargar) X.precargar(3); }, 3);
+    const tl = gsap.timeline(), K = Math.hypot(innerWidth, innerHeight) / 40 * 1.08;
+    gsap.set(L, { '--h': 0 });
+    tl.fromTo('#load .load-b', { opacity: 0, scale: .55 }, { opacity: 1, scale: 1, duration: .85, ease: 'back.out(1.7)' }, 0)
+      .to(L, { '--p': 1, duration: 1.1, ease: 'power2.inOut' }, .2)
+      .to('#load .load-f', { scale: K, duration: .85, ease: 'power3.in' }, 1.35)
+      .to('#load .load-b', { opacity: 0, duration: .25 }, 1.9)
+      .set(L, { backgroundColor: '#A33340' }, 2.2)
+      .fromTo('#load .load-w', { opacity: 0, y: 14, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: .6, ease: 'power3.out' }, 2.05)
+      .to('#load .load-w', { opacity: 0, scale: 1.12, duration: .5, ease: 'power2.in' }, 2.65)
+      .to(L, { '--h': 108, duration: 1.4, ease: 'power4.inOut', onComplete: () => { L.style.display = 'none'; if (lenis) lenis.start(); } }, 2.55)
+      .add(() => { if (desk()) gsap.to('.win', { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.3, ease: 'power4.inOut' }); }, 2.6)
+      .to('.hero-win', { scale: 1, duration: 2.2, ease: 'power3.out' }, 2.55)
+      .to(wmI, { yPercent: 0, duration: 1.5, stagger: .09, ease: 'power4.out' }, 3.15)
+      .to(['#kick', '#sub', '#lead'], { opacity: 1, y: 0, duration: 1.1, stagger: .12, ease: 'power3.out', clearProps: 'transform' }, 3.4)
+      .to('#acc', { y: 0, opacity: 1, duration: 1.3, ease: 'power4.out', clearProps: 'transform' }, 3.5)
+      .to('#nav', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, 3.6)
+      .to('.desliza', { opacity: 1, duration: 1 }, 4)
+      .add(() => { listo = true; sync(true); if (X.precargar) X.precargar(3); }, 3.9);
   }
   pre();
   const fuentes = document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 1800))]) : Promise.resolve();
