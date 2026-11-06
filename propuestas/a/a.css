@@ -383,3 +383,9 @@ main{display:contents}
 
 /* salto entre secciones: cortina corta en vez de scroll largo */
 .salto{position:fixed;inset:0;z-index:95;background:#120A09;opacity:0;pointer-events:none}
+
+/* dias de la reserva: sin recortes (el elegido ya no se levanta) */
+.ra-strip{padding-top:6px;padding-bottom:6px}
+.ra-dia[aria-pressed=true]{transform:none;box-shadow:0 0 0 2px var(--crema)}
+html[data-res=panel] .ra-strip{margin:0;padding:6px 3px;overflow-x:auto;gap:7px}
+html[data-res=panel] .ra-dia{flex:1 0 54px;width:auto;min-width:54px}
