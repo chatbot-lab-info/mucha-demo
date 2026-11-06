@@ -27,7 +27,15 @@
   let lenis = null;
   if (!reduce && window.Lenis) { lenis = new Lenis({ lerp: .085, wheelMultiplier: .95 }); lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add((t) => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); lenis.stop(); }
   const ir = (t, o) => { const el = typeof t === 'string' ? $(t) : t; if (!el) return; lenis ? lenis.scrollTo(el, Object.assign({ duration: 1.7, easing: (x) => 1 - Math.pow(1 - x, 4) }, o || {})) : el.scrollIntoView({ behavior: 'smooth' }); };
-  document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#"]'); if (!a || a.getAttribute('href').length < 2) return; const t = $(a.getAttribute('href')); if (!t) return; e.preventDefault(); if (a.getAttribute('href') === '#inicio') { lenis ? lenis.scrollTo(0, { duration: 1.7, easing: (x) => 1 - Math.pow(1 - x, 4) }) : scrollTo({ top: 0, behavior: 'smooth' }); return; } ir(t); });
+  /* ── reserva en celular: pantalla completa (res=panel), libre, fijo o pausa ── */
+  const MR = document.documentElement.dataset.res || 'panel', panel = () => !desk() && MR === 'panel';
+  const rr = $('#raTop'); let rAb = false;
+  rr.insertAdjacentHTML('afterbegin', '<button class="ra-x" type="button" aria-label="Cerrar">×</button>'); rr.setAttribute('data-lenis-prevent', '');
+  function abrirRes() { if (rAb) return; rAb = true; rr.classList.add('abierto'); document.documentElement.classList.add('ra-on'); if (lenis) lenis.stop(); try { history.pushState({ ra: 1 }, ''); } catch (e) {} }
+  function cerrarRes(pop) { if (!rAb) return; rAb = false; rr.classList.remove('abierto'); document.documentElement.classList.remove('ra-on'); if (lenis) lenis.start(); if (!pop && history.state && history.state.ra) history.back(); }
+  addEventListener('popstate', () => cerrarRes(true)); addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarRes(); }); addEventListener('resize', () => { if (desk()) cerrarRes(); });
+  $('.ra-x', rr).addEventListener('click', () => cerrarRes()); $('.ra-open').addEventListener('click', abrirRes);
+  document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#"]'); if (!a || a.getAttribute('href').length < 2) return; const t = $(a.getAttribute('href')); if (!t) return; e.preventDefault(); if (a.getAttribute('href') === '#reservar' && panel()) { abrirRes(); return; } if (a.getAttribute('href') === '#inicio') { lenis ? lenis.scrollTo(0, { duration: 1.7, easing: (x) => 1 - Math.pow(1 - x, 4) }) : scrollTo({ top: 0, behavior: 'smooth' }); return; } ir(t); });
   gsap.to('#prog', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0 } });
 
   /* ── hero: wordmark, ambiente y ventana de capítulos ── */
@@ -218,7 +226,7 @@
   AMBR.forEach((f, i) => { const e = document.createElement('i'); e.style.backgroundImage = 'url(' + X.M + f + '.jpg)'; $('#ambR').appendChild(e); });
   const ar = $$('#ambR i'); let ak = 0; ar[0].classList.add('on'); setInterval(() => { ar[ak].classList.remove('on'); ak = (ak + 1) % ar.length; ar[ak].classList.add('on'); }, 5200);
   if (desk()) X.rotar($('#resWin'), AMBR, 5200);
-  Reserva.montar($('#raBox'), { onPaso: (n) => { paso = n; dockSync(); if (n === 1 && !lenis) return; const r = $('#raTop').getBoundingClientRect(); if (r.top < 70 || r.top > innerHeight * .5) ir('#raTop', { offset: desk() ? -(84 + 10) : -14, duration: 1.1 }); setTimeout(refrescar, 700); } });
+  Reserva.montar($('#raBox'), { onPaso: (n) => { paso = n; dockSync(); $('#reservar').classList.toggle('en-curso', n >= 2); if (panel()) { const b = $('.ra-body', rr); if (b) b.scrollTop = 0; return; } if (n === 1 && !lenis) return; const r = $('#raTop').getBoundingClientRect(); if (r.top < 70 || r.top > innerHeight * .5) ir('#raTop', { offset: desk() ? -(84 + 10) : -14, duration: 1.1 }); setTimeout(refrescar, 700); } });
   if (!reduce) {
     gsap.from('.res-p, .res-win', { y: 50, opacity: 0, duration: 1.1, stagger: .12, ease: 'power3.out', scrollTrigger: { trigger: '#reservar', start: 'top 62%' } });
     gsap.from('#raBox', { y: 80, opacity: 0, duration: 1.3, ease: 'power4.out', scrollTrigger: { trigger: '#reservar', start: 'top 60%' } });

@@ -317,3 +317,25 @@ main{display:contents}
   .it span{font-size:calc(clamp(11.5px,1.6svh,14px)*var(--k,1))}
   .it p{font-size:calc(clamp(10.5px,1.5svh,13.5px)*var(--k,1));line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 }
+
+/* v7: reserva en celular — pruebas: ?res=panel (defecto) | libre | fijo | pausa */
+.ra-open,.ra-x{display:none}
+@media(max-width:899px){
+  html[data-res=panel] .ra-open{display:inline-flex;margin-top:22px;width:100%}
+  html[data-res=panel] .res{padding-bottom:calc(14svh + 34px)}
+  html[data-res=panel] .res-r{position:fixed;inset:0;z-index:120;background:var(--tinta);display:flex;flex-direction:column;transform:translateY(102%);visibility:hidden;transition:transform .6s var(--ex),visibility 0s .6s}
+  html[data-res=panel] .res-r.abierto{transform:none;visibility:visible;transition:transform .6s var(--ex)}
+  html[data-res=panel] .res-r #raBox{flex:1;min-height:0;display:flex}
+  html[data-res=panel] .ra{flex:1;min-height:0;display:flex;flex-direction:column;width:100%;border-radius:0;border:0;background:transparent;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:calc(16px + env(safe-area-inset-top)) 16px calc(14px + env(safe-area-inset-bottom))}
+  html[data-res=panel] .ra-top{flex:none;padding-right:48px}
+  html[data-res=panel] .ra-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:6px 2px 18px}
+  html[data-res=panel] .ra-nav{flex:none;margin-top:0;padding-top:12px;border-top:1px solid rgba(255,255,255,.1)}
+  html[data-res=panel] .ra-x{display:grid;place-items:center;position:absolute;z-index:3;top:calc(14px + env(safe-area-inset-top));right:14px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);color:var(--crema);font-size:26px;line-height:1}
+  html.ra-on,html.ra-on body{overflow:hidden}
+  html.ra-on .dock,html.ra-on .prog{opacity:0!important;pointer-events:none}
+  html[data-res=libre] .res,html[data-res=fijo] .res{position:relative!important;top:auto!important}
+  html[data-res=pausa] .res.en-curso{position:relative!important;top:auto!important}
+  html[data-res=fijo] .res{padding-bottom:calc(24svh + 34px)}
+  html[data-res=fijo] .ra-nav{position:sticky;bottom:calc(88px + env(safe-area-inset-bottom));z-index:6;background:rgba(18,10,9,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:10px;border-radius:24px;margin-top:16px;border:1px solid rgba(255,255,255,.1)}
+}
+html.ra-on .res{z-index:130!important}

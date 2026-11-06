@@ -5,8 +5,8 @@
 <meta name="description" content="Panadería, pastelería artesanal y cocina italiana en Santa Fe. Mirá la carta y reservá tu mesa en segundos.">
 <meta name="theme-color" content="#120A09">
 <link rel="icon" href="../../img/m-boton-192.png">
-<link rel="stylesheet" href="../shared/base.css"><link rel="stylesheet" href="a.css?v=6">
-<script>document.documentElement.classList.add('js');try{history.scrollRestoration='manual'}catch(e){}scrollTo(0,0)</script>
+<link rel="stylesheet" href="../shared/base.css"><link rel="stylesheet" href="a.css?v=7">
+<script>document.documentElement.classList.add('js');try{history.scrollRestoration='manual'}catch(e){}scrollTo(0,0);document.documentElement.dataset.res=(function(){var m=new URLSearchParams(location.search).get('res');return ['panel','libre','fijo','pausa'].indexOf(m)>=0?m:'panel'})()</script>
 </head><body>
 
 <div class="load" id="load" aria-hidden="true"><div class="load-b"><img src="../../img/m-boton-512.png" alt="" width="84" height="84"><u></u></div></div>
@@ -80,6 +80,7 @@
       <h2 class="serif" data-split>Tu mesa<br><em>te espera</em></h2>
       <p class="res-p">Reservá en el salón en un minuto. La vereda va por orden de llegada.</p>
       <div class="res-win" id="resWin"></div>
+      <button type="button" class="btn btn-r ra-open mag"><span>Reservar mesa</span><svg class="ar" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
     </div>
     <div class="res-r" id="raTop"><div id="raBox"></div></div>
   </div>
@@ -99,5 +100,5 @@
 </footer>
 
 <script src="../../js/vendor/gsap.min.js"></script><script src="../../js/vendor/ScrollTrigger.min.js"></script><script src="../../js/vendor/lenis.min.js"></script>
-<script src="../../js/config.js?v=2"></script><script src="../../js/demo.js?v=2"></script><script src="../../js/panel.js?v=2"></script><script src="../shared/lib.js"></script><script src="reserva.js?v=5"></script><script src="a.js?v=5"></script>
+<script src="../../js/config.js?v=2"></script><script src="../../js/demo.js?v=2"></script><script src="../../js/panel.js?v=2"></script><script src="../shared/lib.js"></script><script src="reserva.js?v=6"></script><script src="a.js?v=6"></script>
 </body></html>
