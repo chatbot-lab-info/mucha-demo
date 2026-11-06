@@ -36,7 +36,7 @@
   ubicar();
   const hi = document.documentElement;
   function abrirRes() {
-    if (rAb) return; rAb = true; ubicar(); rr.classList.add('abierto'); hi.classList.add('ra-on'); if (lenis) lenis.stop(); try { history.pushState({ ra: 1 }, ''); } catch (e) {}
+    if (rAb) return; rAb = true; ubicar(); rr.classList.add('abierto'); hi.classList.add('ra-on'); dispatchEvent(new Event('ra-fit')); setTimeout(() => dispatchEvent(new Event('ra-fit')), 300); if (lenis) lenis.stop(); try { history.pushState({ ra: 1 }, ''); } catch (e) {}
     if (reduce) return; const sh = $('#raBox', rr);
     gsap.killTweensOf([sh, $('.ra-dim', rr), $('.ra-x', rr)]);
     gsap.fromTo($('.ra-dim', rr), { opacity: 0 }, { opacity: 1, duration: .5, ease: 'power2.out' });

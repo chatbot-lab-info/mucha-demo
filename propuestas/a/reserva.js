@@ -34,6 +34,11 @@
     const $ = (s) => root.querySelector(s), $$ = (s) => Array.from(root.querySelectorAll(s));
     $('[data-okmapa]').href = X.mapa();
     const live = () => { const L = $('[data-live]'); L.innerHTML = S.hora ? 'Mesa para <b>' + S.personas + '</b> · ' + esc(corto(S.fecha)) + ' · <b>' + esc(S.hora) + '</b>' : 'Elegí el día y el horario'; };
+    /* modal movil: achica por niveles hasta que todo entre sin scroll */
+    const fit = () => { const B = $('.ra-body'); if (!B || !B.offsetHeight || !root.closest('html') || document.documentElement.dataset.res !== 'panel' || innerWidth >= 900) return; root.classList.remove('c2', 'c3'); if (B.scrollHeight > B.clientHeight + 1) { root.classList.add('c2'); if (B.scrollHeight > B.clientHeight + 1) root.classList.add('c3'); } };
+    let fq = 0; const fitQ = () => { cancelAnimationFrame(fq); fq = requestAnimationFrame(fit); };
+    if (window.MutationObserver) new MutationObserver(fitQ).observe(root, { childList: true, subtree: true });
+    addEventListener('resize', fitQ); addEventListener('orientationchange', fitQ); addEventListener('ra-fit', fitQ);
     const pasos = () => $$('[data-steps] i').forEach((i) => { const n = +i.dataset.s; i.classList.toggle('on', n === S.paso); i.classList.toggle('hecho', n < S.paso); });
     const mostrar = (n, anim) => {
       S.paso = n; $$('.ra-p').forEach((p) => { p.hidden = +p.dataset.p !== n; });
@@ -41,7 +46,7 @@
       $('[data-main]').textContent = n === 1 ? 'Continuar' : 'Confirmar reserva'; $('[data-main]').disabled = n === 1 && !S.hora;
       if (n === 2) resumen(); pasos(); live();
       if (window.gsap && !reduce && anim !== false) gsap.from($$('.ra-p:not([hidden]) > *'), { y: calma() ? 0 : 22, opacity: 0, duration: calma() ? .35 : .7, stagger: calma() ? 0 : .08, ease: 'power2.out', clearProps: 'all' });
-      if (op.onPaso) op.onPaso(n);
+      fitQ(); setTimeout(fit, 120); setTimeout(fit, 800); if (op.onPaso) op.onPaso(n);
     };
     /* calendario del mes */
     function cal() {
