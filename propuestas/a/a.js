@@ -38,9 +38,9 @@
 
   /* ── hero: wordmark, ambiente y ventana de capítulos ── */
   const wmI = letras($('#wm'), 'MUCHA');
-  const CH = [{ f: 'fachada', l: 'Bv. Gálvez y Mitre' }, { f: 'terraza', l: 'La terraza' }, { f: 'spritz', l: 'Aperitivos' }, { f: 'local', l: 'El salón' }];
+  const CH = [{ f: 'fachada', l: 'Bv. Gálvez y Mitre' }, { f: 'croissant', l: 'El café' }, { f: 'local', l: 'El salón' }, { f: 'terraza', l: 'La terraza' }];
   const win = $('#win'), chap = $('#chap'), amb = $('#amb'), DUR = 5.2;
-  const hv = CH.map((c, i) => { const v = document.createElement('video'); v.muted = true; v.loop = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = i < 2 ? 'auto' : 'metadata'; v.poster = X.M + c.f + '.jpg'; v.src = X.M + c.f + '.mp4'; v.className = 'rvid'; win.insertBefore(v, chap); return v; });
+  const hv = CH.map((c, i) => { const v = document.createElement('video'); v.muted = true; v.loop = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = i < 2 ? 'auto' : 'metadata'; v.poster = X.M + c.f + '.jpg'; v.src = X.M + c.f + '.mp4'; v.className = 'rvid'; win.insertBefore(v, $('#chapL')); return v; });
   CH.forEach((c) => { const i = document.createElement('i'); i.style.backgroundImage = 'url(' + X.M + c.f + '.jpg)'; amb.appendChild(i); });
   chap.innerHTML = CH.map(() => '<i><u></u></i>').join('');
   const bars = $$('#chap u'), ambs = $$('#amb i'); let cur = -1, tw = null, heroOn = true;
@@ -48,7 +48,7 @@
     cur = k; hv.forEach((v, j) => { v.classList.toggle('on', j === k); if (j === k) playV(v); else setTimeout(() => { if (cur !== j) v.pause(); }, 1500); });
     ambs.forEach((a, j) => a.classList.toggle('on', j === k));
     bars.forEach((b, j) => { gsap.killTweensOf(b); gsap.set(b, { scaleX: j < k ? 1 : 0 }); });
-    $('#chapL').innerHTML = '<b>' + String(k + 1).padStart(2, '0') + '</b>' + esc(CH[k].l);
+    $('#chapN').textContent = String(k + 1).padStart(2, '0'); $('#chapT').textContent = CH[k].l;
     if (tw) tw.kill(); tw = gsap.to(bars[k], { scaleX: 1, duration: DUR, ease: 'none', onComplete: () => cap((k + 1) % CH.length) }); if (!heroOn) tw.pause();
   }
   win.addEventListener('click', () => cap((cur + 1) % CH.length));
@@ -183,7 +183,7 @@
   document.addEventListener('click', (e) => { const a = e.target.closest('[data-k]'); if (!a) return; if (cartaD) elegir(a.dataset.k); else pend = a.dataset.k; });
 
   /* ── reserva ── */
-  const AMBR = ['terraza', 'local', 'vino', 'fachada'];
+  const AMBR = ['terraza', 'local', 'croissant', 'fachada'];
   AMBR.forEach((f, i) => { const e = document.createElement('i'); e.style.backgroundImage = 'url(' + X.M + f + '.jpg)'; $('#ambR').appendChild(e); });
   const ar = $$('#ambR i'); let ak = 0; ar[0].classList.add('on'); setInterval(() => { ar[ak].classList.remove('on'); ak = (ak + 1) % ar.length; ar[ak].classList.add('on'); }, 5200);
   if (desk()) X.rotar($('#resWin'), AMBR, 5200);
