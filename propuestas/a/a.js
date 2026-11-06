@@ -31,7 +31,7 @@
   gsap.to('#prog', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0 } });
 
   /* ── hero: wordmark, ambiente y ventana de capítulos ── */
-  const wmI = letras($('#wm'), 'MUCHA');
+  const wmI = $('#wm img');
   const CH = [{ f: 'fachada', l: 'Bv. Gálvez y Mitre' }, { f: 'croissant', l: 'El café' }, { f: 'local', l: 'El salón' }, { f: 'terraza', l: 'La terraza' }];
   const win = $('#win'), chap = $('#chap'), amb = $('#amb'), DUR = 5.2;
   const hv = CH.map((c, i) => { const v = document.createElement('video'); v.muted = true; v.loop = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = i < 2 ? 'auto' : 'metadata'; v.poster = X.M + c.f + '.jpg'; v.src = X.M + c.f + '.mp4'; v.className = 'rvid'; win.insertBefore(v, $('#chapL')); return v; });
@@ -48,31 +48,28 @@
   win.addEventListener('click', () => cap((cur + 1) % CH.length));
   cap(0);
   ScrollTrigger.create({ trigger: '#inicio', start: 'top bottom', end: 'bottom top', onToggle: (s) => { heroOn = s.isActive; if (tw) tw.paused(!heroOn); hv.forEach((v, j) => { if (!heroOn) v.pause(); else if (j === cur) playV(v); }); } });
-  $$('.sat video').forEach((v) => { setV(v, v.dataset.v); watch(v); });
 
   /* ── entrada ── */
-  const nav = $('#nav'), dock = $('#dock');
+  const nav = $('#nav'), dock = $('#dock'); let listo = false;
   function pre() {
-    if (reduce) { $('#load').style.display = 'none'; dock.classList.add('ver'); return; }
-    gsap.set(wmI, { yPercent: 118 }); gsap.set(['#kick', '#sub', '#lead'], { opacity: 0, y: 26 }); gsap.set('#acc', { y: 60, opacity: 0 }); gsap.set('.win', { clipPath: 'inset(100% 0% 0% 0%)' }); gsap.set('.sat', { opacity: 0, scale: .6, y: 60 }); gsap.set('.hero-win', { scale: 1.06 }); gsap.set('#nav', { opacity: 0, y: -50 }); gsap.set('.desliza', { opacity: 0 });
+    if (reduce) { $('#load').style.display = 'none'; listo = true; return; }
+    gsap.set(wmI, { yPercent: 118 }); gsap.set(['#kick', '#sub', '#lead'], { opacity: 0, y: 26 }); gsap.set('#acc', { y: 60, opacity: 0 }); gsap.set('.win', { clipPath: 'inset(100% 0% 0% 0%)' }); gsap.set('.hero-win', { scale: 1.06 }); gsap.set('#nav', { opacity: 0, y: -50 }); gsap.set('.desliza', { opacity: 0 });
   }
   function entrar() {
     const L = $('#load'); if (reduce || !L) { if (lenis) lenis.start(); return; }
     const tl = gsap.timeline();
     tl.to('#load img', { opacity: 1, scale: 1, duration: .7, ease: 'power3.out' }, 0).from('#load img', { scale: .8, duration: .7, ease: 'power3.out' }, 0)
-      .to('#load .caps', { opacity: .8, duration: .6 }, .15)
       .to(L, { '--p': 1, duration: 1.0, ease: 'power2.inOut' }, .1)
-      .to(['#load img', '#load .caps', '#load i'], { opacity: 0, y: -14, duration: .45, ease: 'power2.in' }, 1.25)
+      .to('#load .load-b', { opacity: 0, y: -14, duration: .45, ease: 'power2.in' }, 1.25)
       .to(L, { yPercent: -100, duration: 1.15, ease: 'power4.inOut', onComplete: () => { L.style.display = 'none'; if (lenis) lenis.start(); } }, 1.55)
       .to('.win', { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.5, ease: 'power4.inOut' }, 1.75)
       .to('.hero-win', { scale: 1, duration: 2.2, ease: 'power3.out' }, 1.75)
       .to(wmI, { yPercent: 0, duration: 1.5, stagger: .09, ease: 'power4.out' }, 2.15)
       .to(['#kick', '#sub', '#lead'], { opacity: 1, y: 0, duration: 1.1, stagger: .12, ease: 'power3.out', clearProps: 'transform' }, 2.45)
       .to('#acc', { y: 0, opacity: 1, duration: 1.3, ease: 'power4.out', clearProps: 'transform' }, 2.55)
-      .to('.sat', { opacity: 1, scale: 1, y: 0, duration: 1.4, ease: 'power4.out' }, 2.7)
       .to('#nav', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, 2.7)
       .to('.desliza', { opacity: 1, duration: 1 }, 3.1)
-      .add(() => dock.classList.add('ver'), 3);
+      .add(() => { listo = true; sync(true); }, 3);
   }
   pre();
   const fuentes = document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 1800))]) : Promise.resolve();
@@ -83,18 +80,17 @@
     const mm = gsap.matchMedia();
     mm.add('(min-width:900px)', () => {
       const h = { trigger: '#inicio', start: 'top top', end: 'bottom top', scrub: true };
-      gsap.to('#hwin', { yPercent: -9, ease: 'none', scrollTrigger: h }); gsap.to('.sat', { yPercent: -80, ease: 'none', scrollTrigger: h });
+      gsap.to('#hwin', { yPercent: -9, ease: 'none', scrollTrigger: h });
       gsap.to('.hero-top', { yPercent: -22, ease: 'none', scrollTrigger: h });
       if (fine) {
-        const qx = gsap.quickTo('#win', 'x', { duration: 1.2, ease: 'power3' }), qy = gsap.quickTo('#win', 'y', { duration: 1.2, ease: 'power3' }), sx = gsap.quickTo('.sat', 'x', { duration: 1.4, ease: 'power3' }), sy = gsap.quickTo('.sat', 'y', { duration: 1.4, ease: 'power3' });
-        const mv = (e) => { const nx = e.clientX / innerWidth - .5, ny = e.clientY / innerHeight - .5; qx(nx * -22); qy(ny * -16); sx(nx * 38); sy(ny * 30); };
+        const qx = gsap.quickTo('#win', 'x', { duration: 1.2, ease: 'power3' }), qy = gsap.quickTo('#win', 'y', { duration: 1.2, ease: 'power3' });
+        const mv = (e) => { const nx = e.clientX / innerWidth - .5, ny = e.clientY / innerHeight - .5; qx(nx * -22); qy(ny * -16); };
         addEventListener('pointermove', mv); return () => removeEventListener('pointermove', mv);
       }
     });
     mm.add('(max-width:899px)', () => {
       const h = { trigger: '#inicio', start: 'top top', end: 'bottom top', scrub: true };
       gsap.to('#win', { scale: 1.14, ease: 'none', scrollTrigger: h }); gsap.to('.hero-top', { yPercent: -30, opacity: 0, ease: 'none', scrollTrigger: { trigger: '#inicio', start: '8% top', end: '70% top', scrub: true } });
-      gsap.to('#acc', { yPercent: -30, opacity: 0, ease: 'none', scrollTrigger: { trigger: '#inicio', start: '20% top', end: '70% top', scrub: true } });
     });
   }
 
@@ -111,7 +107,44 @@
   [['inicio', '#inicio', '#man'], ['dia', '#dia', '#dia'], ['carta', '#carta', '#carta'], ['reservar', '#reservar', '#reservar'], ['llegar', '#llegar', '#llegar']].forEach(([id, a, b]) => ScrollTrigger.create({ trigger: a, start: 'top 55%', endTrigger: b, end: 'bottom 55%', onToggle: (s) => { if (s.isActive) marcar(id); } }));
   ScrollTrigger.create({ trigger: '#man', start: 'top 60px', end: 'bottom 60px', onToggle: (s) => { manOn = s.isActive; const a = links.find((x) => x.classList.contains('on')); if (a) marcar(a.getAttribute('href').slice(1)); } });
   marcar('inicio'); addEventListener('resize', () => { const a = links.find((x) => x.classList.contains('on')); if (a) marcar(a.getAttribute('href').slice(1)); });
-  ScrollTrigger.create({ start: 0, end: 'max', onUpdate: (s) => { const y = s.scroll(); nav.classList.toggle('oculto', y > 240 && s.direction === 1); if (y < 240) nav.classList.remove('oculto'); } });
+  ScrollTrigger.create({ start: 0, end: 'max', onUpdate: (s) => { const y = s.scroll(); nav.classList.toggle('oculto', y > 240 && s.direction === 1); if (y < 240) nav.classList.remove('oculto'); sync(); } });
+
+
+  /* ── los dos botones de la portada se transforman en el menú al scrollear (y vuelven al subir) ── */
+  let dk = false, vol = [];
+  const parejas = () => desk() ? [['#acc .btn-r', '#nav .btn-c'], ['#acc .btn-g', '#navP a[href="#carta"]']] : [['#acc .btn-r', '#dock a[data-s="reservar"]'], ['#acc .btn-g', '#dock a[data-s="carta"]']];
+  const limpiarVuelo = () => { vol.forEach((f) => { f.t.kill(); f.c.remove(); f.b.classList.remove('fly'); }); vol = []; };
+  function estado(on) { dk = on; document.body.classList.toggle('dk', on); dock.classList.toggle('ver', on); }
+  function sync(forzar) {
+    if (!listo) return;
+    const y = window.scrollY, quiere = dk ? y > 40 : y > 110;
+    if (quiere === dk && !forzar) return;
+    const on = forzar ? y > 110 : quiere;
+    limpiarVuelo();
+    const anim = !reduce && !forzar && !(desk() && nav.classList.contains('oculto')) && !(dock.classList.contains('baja'));
+    const pares = parejas().map(([a, b]) => [$(a), $(b)]);
+    const orig = pares.map(([A, B]) => { const o = on ? A : B, r = o.getBoundingClientRect(), cs = getComputedStyle(o); return { r, bg: cs.backgroundColor, col: cs.color, rad: cs.borderRadius, cn: A.cloneNode(true) }; });
+    estado(on);
+    if (!anim) return;
+    pares.forEach(([A, B], i) => {
+      const dest = on ? B : A, o = orig[i]; dest.classList.add('fly');
+      const t = dest.getBoundingClientRect(), cs = getComputedStyle(dest), c = o.cn;
+      c.classList.remove('mag', 'fly', 'on'); c.removeAttribute('id'); c.setAttribute('aria-hidden', 'true'); c.tabIndex = -1;
+      Object.assign(c.style, { position: 'fixed', margin: 0, left: o.r.left + 'px', top: o.r.top + 'px', width: o.r.width + 'px', height: o.r.height + 'px', zIndex: 90, pointerEvents: 'none', backgroundColor: o.bg, color: o.col, borderRadius: o.rad, transform: 'none', boxSizing: 'border-box', transition: 'none' });
+      document.body.appendChild(c);
+      const t1 = gsap.timeline({ onComplete: () => { c.remove(); dest.classList.remove('fly'); vol = vol.filter((f) => f.c !== c); } });
+      t1.to(c, { left: t.left, top: t.top, width: t.width, height: t.height, backgroundColor: cs.backgroundColor, color: cs.color, borderRadius: cs.borderRadius, duration: .8, ease: 'power3.inOut' }, 0)
+        .add(() => { dest.classList.remove('fly'); }, on ? .5 : .78);
+      if (on) t1.to(c, { opacity: 0, duration: .3, ease: 'none' }, .5); else { gsap.set(c, { opacity: 0 }); t1.to(c, { opacity: 1, duration: .25, ease: 'none' }, 0); }
+      vol.push({ t: t1, c, b: dest });
+    });
+  }
+  addEventListener('resize', () => { limpiarVuelo(); sync(true); });
+
+  /* ── tarjetas apiladas: cada sección queda fija abajo y la siguiente se solapa por encima ── */
+  const apilar = ['#man', '#dia', '#carta', '#reservar'].map((s) => $(s));
+  const fijar = () => apilar.forEach((el) => { el.style.top = Math.min(0, innerHeight - el.offsetHeight) + 'px'; });
+  fijar(); addEventListener('resize', fijar); if (window.ResizeObserver) { const ro = new ResizeObserver(fijar); apilar.forEach((el) => ro.observe(el)); }
 
   /* ── manifiesto ── */
   const MAN = [['Mucha', 0], ['es', 0], ['herencia', 'em'], ['italiana:', 0], ['pan', 0], ['de', 0], ['masa', 0], ['madre', 0], ['al', 0], ['amanecer,', 0], ['pastas', 0], ['hechas', 0], ['a', 0], ['mano', 0], ['al', 0], ['mediodía,', 0], ['y', 0], ['cócteles', 0], ['cuando', 0], ['cae', 0], ['la', 0], ['noche.', 0]];
@@ -185,7 +218,7 @@
   }
 
   /* ── footer ── */
-  const pm = letras($('#pieM'), 'MUCHA');
+  const pm = $('#pieM img');
   if (!reduce) {
     gsap.from(pm, { yPercent: 115, duration: 1.5, stagger: .09, ease: 'power4.out', scrollTrigger: { trigger: '#llegar', start: 'top 78%' } });
     gsap.from('.pie-s, .pie-g > *, .pie-b', { y: 40, opacity: 0, duration: 1, stagger: .1, ease: 'power3.out', scrollTrigger: { trigger: '.pie-g', start: 'top 92%' } });
