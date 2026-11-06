@@ -4,13 +4,7 @@
   const fine = matchMedia('(hover:hover) and (pointer:fine)').matches, desk = () => innerWidth >= 900;
   const nz = (s) => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   gsap.registerPlugin(ScrollTrigger);
-  $('#lMapa').href = X.mapa(); $('#lMapa0').href = X.mapa(); $('#lWa').href = X.wa('Hola Mucha!');
-
-  /* ── estado del local ── */
-  (function () {
-    const n = new Date(), dow = n.getDay(), h = n.getHours() + n.getMinutes() / 60, finde = dow === 0 || dow === 6, abre = finde ? 8.5 : 7.5;
-    const ab = h >= abre || h < 1.5, e = $('#estado'); e.textContent = ab ? 'Abierto ahora' : 'Cerrado ahora'; e.classList.toggle('off', !ab); $('#dAbre').textContent = finde ? '8:30' : '7:30';
-  })();
+  $('#lMapa').href = X.mapa(); $('#lWa').href = X.wa('Hola Mucha!');
 
   /* ── videos: cargar cerca de la pantalla, reproducir solo lo visible ── */
   const playV = (v) => { const p = v.play(); if (p && p.catch) p.catch(() => {}); };
@@ -60,7 +54,7 @@
   const nav = $('#nav'), dock = $('#dock');
   function pre() {
     if (reduce) { $('#load').style.display = 'none'; dock.classList.add('ver'); return; }
-    gsap.set(wmI, { yPercent: 118 }); gsap.set(['#kick', '#sub', '#lead'], { opacity: 0, y: 26 }); gsap.set('#status', { y: 90, opacity: 0 }); gsap.set('.win', { clipPath: 'inset(100% 0% 0% 0%)' }); gsap.set('.sat', { opacity: 0, scale: .6, y: 60 }); gsap.set('.hero-win', { scale: 1.06 }); gsap.set('#nav', { opacity: 0, y: -50 }); gsap.set('.desliza', { opacity: 0 });
+    gsap.set(wmI, { yPercent: 118 }); gsap.set(['#kick', '#sub', '#lead'], { opacity: 0, y: 26 }); gsap.set('#acc', { y: 60, opacity: 0 }); gsap.set('.win', { clipPath: 'inset(100% 0% 0% 0%)' }); gsap.set('.sat', { opacity: 0, scale: .6, y: 60 }); gsap.set('.hero-win', { scale: 1.06 }); gsap.set('#nav', { opacity: 0, y: -50 }); gsap.set('.desliza', { opacity: 0 });
   }
   function entrar() {
     const L = $('#load'); if (reduce || !L) { if (lenis) lenis.start(); return; }
@@ -74,7 +68,7 @@
       .to('.hero-win', { scale: 1, duration: 2.2, ease: 'power3.out' }, 1.75)
       .to(wmI, { yPercent: 0, duration: 1.5, stagger: .09, ease: 'power4.out' }, 2.15)
       .to(['#kick', '#sub', '#lead'], { opacity: 1, y: 0, duration: 1.1, stagger: .12, ease: 'power3.out', clearProps: 'transform' }, 2.45)
-      .to('#status', { y: 0, opacity: 1, duration: 1.3, ease: 'power4.out', clearProps: 'transform' }, 2.55)
+      .to('#acc', { y: 0, opacity: 1, duration: 1.3, ease: 'power4.out', clearProps: 'transform' }, 2.55)
       .to('.sat', { opacity: 1, scale: 1, y: 0, duration: 1.4, ease: 'power4.out' }, 2.7)
       .to('#nav', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, 2.7)
       .to('.desliza', { opacity: 1, duration: 1 }, 3.1)
@@ -91,7 +85,6 @@
       const h = { trigger: '#inicio', start: 'top top', end: 'bottom top', scrub: true };
       gsap.to('#hwin', { yPercent: -9, ease: 'none', scrollTrigger: h }); gsap.to('.sat', { yPercent: -80, ease: 'none', scrollTrigger: h });
       gsap.to('.hero-top', { yPercent: -22, ease: 'none', scrollTrigger: h });
-      gsap.to('#status', { yPercent: -12, ease: 'none', scrollTrigger: h });
       if (fine) {
         const qx = gsap.quickTo('#win', 'x', { duration: 1.2, ease: 'power3' }), qy = gsap.quickTo('#win', 'y', { duration: 1.2, ease: 'power3' }), sx = gsap.quickTo('.sat', 'x', { duration: 1.4, ease: 'power3' }), sy = gsap.quickTo('.sat', 'y', { duration: 1.4, ease: 'power3' });
         const mv = (e) => { const nx = e.clientX / innerWidth - .5, ny = e.clientY / innerHeight - .5; qx(nx * -22); qy(ny * -16); sx(nx * 38); sy(ny * 30); };
@@ -101,49 +94,46 @@
     mm.add('(max-width:899px)', () => {
       const h = { trigger: '#inicio', start: 'top top', end: 'bottom top', scrub: true };
       gsap.to('#win', { scale: 1.14, ease: 'none', scrollTrigger: h }); gsap.to('.hero-top', { yPercent: -30, opacity: 0, ease: 'none', scrollTrigger: { trigger: '#inicio', start: '8% top', end: '70% top', scrub: true } });
-      gsap.to('#status', { yPercent: -40, opacity: 0, ease: 'none', scrollTrigger: { trigger: '#inicio', start: '20% top', end: '75% top', scrub: true } });
+      gsap.to('#acc', { yPercent: -30, opacity: 0, ease: 'none', scrollTrigger: { trigger: '#inicio', start: '20% top', end: '70% top', scrub: true } });
     });
   }
 
   /* ── navegación: indicador, ocultar al bajar, secciones activas ── */
   const links = $$('#navP a'), ni = $('#ni'); let enRes = false, paso = 1;
+  let manOn = false;
   const dockSync = () => dock.classList.toggle('baja', paso > 1 && enRes && !desk());
   function marcar(id) {
     links.forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + id));
     const a = links.find((x) => x.classList.contains('on')); if (a && ni) { ni.style.width = a.offsetWidth + 'px'; ni.style.transform = 'translateX(' + a.offsetLeft + 'px)'; }
-    nav.classList.toggle('claro', id === 'carta'); enRes = id === 'reservar'; dockSync();
+    nav.classList.toggle('claro', id === 'carta' || manOn); enRes = id === 'reservar'; dockSync();
     $$('#dock a').forEach((a2) => a2.classList.toggle('on', a2.dataset.s === (id === 'dia' ? 'inicio' : id)));
   }
   [['inicio', '#inicio', '#man'], ['dia', '#dia', '#dia'], ['carta', '#carta', '#carta'], ['reservar', '#reservar', '#reservar'], ['llegar', '#llegar', '#llegar']].forEach(([id, a, b]) => ScrollTrigger.create({ trigger: a, start: 'top 55%', endTrigger: b, end: 'bottom 55%', onToggle: (s) => { if (s.isActive) marcar(id); } }));
+  ScrollTrigger.create({ trigger: '#man', start: 'top 60px', end: 'bottom 60px', onToggle: (s) => { manOn = s.isActive; const a = links.find((x) => x.classList.contains('on')); if (a) marcar(a.getAttribute('href').slice(1)); } });
   marcar('inicio'); addEventListener('resize', () => { const a = links.find((x) => x.classList.contains('on')); if (a) marcar(a.getAttribute('href').slice(1)); });
   ScrollTrigger.create({ start: 0, end: 'max', onUpdate: (s) => { const y = s.scroll(); nav.classList.toggle('oculto', y > 240 && s.direction === 1); if (y < 240) nav.classList.remove('oculto'); } });
 
   /* ── manifiesto ── */
-  const MAN = [['Mucha', 0], ['es', 0], ['herencia', 'em'], ['italiana:', 0], ['pan', 0], ['de', 0], ['masa', 0], ['madre', 0], ['al', 0], ['amanecer,', 0], ['@pan', 1], ['pastas', 0], ['hechas', 0], ['a', 0], ['mano', 0], ['al', 0], ['mediodía,', 0], ['@burrata', 1], ['y', 0], ['cócteles', 0], ['cuando', 0], ['cae', 0], ['la', 0], ['noche.', 0], ['@aperitivo', 1]];
+  const MAN = [['Mucha', 0], ['es', 0], ['herencia', 'em'], ['italiana:', 0], ['pan', 0], ['de', 0], ['masa', 0], ['madre', 0], ['al', 0], ['amanecer,', 0], ['pastas', 0], ['hechas', 0], ['a', 0], ['mano', 0], ['al', 0], ['mediodía,', 0], ['y', 0], ['cócteles', 0], ['cuando', 0], ['cae', 0], ['la', 0], ['noche.', 0]];
   $('#mt').innerHTML = MAN.map(([w, k]) => w[0] === '@' ? '<span class="pl"><video data-v="' + w.slice(1) + '" muted loop playsinline></video></span>' : '<span class="w">' + (k === 'em' ? '<em>' + w + '</em>' : esc(w)) + '</span>').join(' ');
-  $$('#mt video').forEach(watch); $$('.man-f video').forEach((v) => { setV(v, v.dataset.v); watch(v); });
-  if (!reduce) {
-    gsap.to('#mt .w', { opacity: 1, stagger: .5, ease: 'none', scrollTrigger: { trigger: '#man', start: 'top 72%', end: 'bottom 62%', scrub: .4 } });
-    $$('#mt .pl').forEach((p) => gsap.to(p, { scale: 1, opacity: 1, duration: 1, ease: 'power4.out', scrollTrigger: { trigger: p, start: 'top 88%' } }));
-    if (desk()) { gsap.fromTo('.man-f .f1', { yPercent: 40, rotate: 3 }, { yPercent: -70, rotate: -3, ease: 'none', scrollTrigger: { trigger: '#man', start: 'top bottom', end: 'bottom top', scrub: true } }); gsap.fromTo('.man-f .f2', { yPercent: 90, rotate: -4 }, { yPercent: -130, rotate: 4, ease: 'none', scrollTrigger: { trigger: '#man', start: 'top bottom', end: 'bottom top', scrub: true } }); }
-  } else { $$('#mt .w').forEach((w) => { w.style.opacity = 1; }); $$('#mt .pl').forEach((p) => { p.style.opacity = 1; p.style.transform = 'none'; }); }
+  if (!reduce) gsap.to('#mt .w', { opacity: 1, stagger: .5, ease: 'none', scrollTrigger: { trigger: '#man', start: 'top 62%', end: 'bottom 70%', scrub: .5 } });
+  else $$('#mt .w').forEach((w) => { w.style.opacity = 1; });
 
   /* ── todo el día: tarjetas que se apilan ── */
   const MOM = [
-    { h: '07:30', t: 'Buen día', d: 'Café, medialunas y pan de masa madre. La panadería abre antes que nadie.', v: 'croissant', bg: '#F1EBDF', c: '#2a1414', k: 'Desayun' },
-    { h: '12:30', t: 'Mediodía', d: 'Pastas caseras, risottos y cocina italiana. La cocina está abierta todo el día.', v: 'pasta', bg: '#F4DCC0', c: '#3a1a14', k: 'Pastas' },
-    { h: '17:00', t: 'La merienda', d: 'Pastelería artesanal, tortas y algo rico para acompañar el café.', v: 'horno', bg: '#D98C6A', c: '#2a0f0c', k: 'Pasteler' },
-    { h: '21:00', t: 'La cena', d: 'Entradas para compartir, principales y una carta de vinos para quedarse.', v: 'plato', bg: '#4a1620', c: '#F1EBDF', k: 'Principales' },
-    { h: '23:30', t: 'Cócteles', d: 'Aperitivos, spritz y tragos de autor en la barra, la vereda y la terraza.', v: 'spritz', bg: '#180d0c', c: '#F1EBDF', k: 'Cocteles' }
+    { h: '07:30', t: 'Buen día', d: 'Café, medialunas y pan de masa madre. La panadería abre antes que nadie.', v: 'desayuno', bg: '#F1EBDF', c: '#2a1414', k: 'Desayun' },
+    { h: '12:30', t: 'Mediodía', d: 'Pastas caseras, risottos y cocina italiana. La cocina está abierta todo el día.', v: 'almuerzo', bg: '#F4DCC0', c: '#3a1a14', k: 'Pastas' },
+    { h: '17:00', t: 'La merienda', d: 'Pastelería artesanal, tortas y algo rico para acompañar el café.', v: 'merienda', bg: '#D98C6A', c: '#2a0f0c', k: 'Pasteler' },
+    { h: '21:00', t: 'La cena', d: 'Entradas para compartir, principales y una carta de vinos para quedarse.', v: 'cena', bg: '#4a1620', c: '#F1EBDF', k: 'Principales' },
+    { h: '23:30', t: 'Cócteles', d: 'Aperitivos, spritz y tragos de autor en la barra, la vereda y la terraza.', v: 'cocteles', bg: '#180d0c', c: '#F1EBDF', k: 'Cocteles' }
   ];
-  $('#stack').innerHTML = MOM.map((m, i) => '<article class="mom" style="--i:' + i + ';--bg:' + m.bg + ';--c:' + m.c + '"><div class="mom-v"><video data-v="' + m.v + '" muted loop playsinline></video></div><span class="mom-n">' + String(i + 1).padStart(2, '0') + ' / ' + String(MOM.length).padStart(2, '0') + '</span><div class="mom-t"><span class="hora">' + m.h + '</span><div class="hd" aria-hidden="true">' + m.h + '</div><div class="grp"><h3 class="serif">' + esc(m.t) + '</h3><p>' + esc(m.d) + '</p><a class="btn btn-o" href="#carta" data-k="' + esc(m.k) + '">Ver en la carta</a></div></div></article>').join('');
-  $$('#stack video').forEach(watch);
+  $('#stack').innerHTML = MOM.map((m, i) => '<article class="mom" style="--i:' + i + ';--bg:' + m.bg + ';--c:' + m.c + '"><div class="mom-v"><img src="img/' + m.v + '.jpg" alt="" decoding="async" loading="lazy"></div><span class="mom-n">' + String(i + 1).padStart(2, '0') + ' / ' + String(MOM.length).padStart(2, '0') + '</span><div class="mom-t"><span class="hora">' + m.h + '</span><div class="hd" aria-hidden="true">' + m.h + '</div><div class="grp"><h3 class="serif">' + esc(m.t) + '</h3><p>' + esc(m.d) + '</p><a class="btn btn-o" href="#carta" data-k="' + esc(m.k) + '">Ver en la carta</a></div></div></article>').join('');
   const cards = $$('.mom');
   if (!reduce) {
     cards.forEach((c, i) => {
       if (i < cards.length - 1) gsap.to(c, { scale: .94, '--dim': .62, ease: 'none', scrollTrigger: { trigger: cards[i + 1], start: 'top 88%', end: 'top 14%', scrub: true } });
       gsap.from($$('.grp > *, .hd, .mom-n', c), { y: 36, opacity: 0, duration: 1, stagger: .08, ease: 'power3.out', scrollTrigger: { trigger: c, start: 'top 72%' } });
-      gsap.fromTo($('video', c), { scale: 1.22 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: c, start: 'top bottom', end: 'top 20%', scrub: true } });
+      gsap.fromTo($('img', c), { scale: 1.16 }, { scale: 1, ease: 'none', force3D: true, scrollTrigger: { trigger: c, start: 'top bottom', end: 'top 20%', scrub: .7 } });
     });
   }
 
