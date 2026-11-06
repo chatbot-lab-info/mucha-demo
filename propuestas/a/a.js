@@ -30,7 +30,7 @@
   /* ── reserva en celular: pantalla completa (res=panel), libre, fijo o pausa ── */
   const MR = document.documentElement.dataset.res || 'panel', panel = () => !desk() && MR === 'panel';
   const rr = $('#raTop'); let rAb = false;
-  rr.insertAdjacentHTML('afterbegin', '<button class="ra-x" type="button" aria-label="Cerrar">×</button>'); rr.setAttribute('data-lenis-prevent', '');
+  rr.insertAdjacentHTML('afterbegin', '<button class="ra-x" type="button" aria-label="Cerrar">×</button>'); rr.insertAdjacentHTML('afterbegin', '<div class="ra-bg" aria-hidden="true"></div>'); rr.setAttribute('data-lenis-prevent', '');
   function abrirRes() { if (rAb) return; rAb = true; rr.classList.add('abierto'); document.documentElement.classList.add('ra-on'); if (lenis) lenis.stop(); try { history.pushState({ ra: 1 }, ''); } catch (e) {} }
   function cerrarRes(pop) { if (!rAb) return; rAb = false; rr.classList.remove('abierto'); document.documentElement.classList.remove('ra-on'); if (lenis) lenis.start(); if (!pop && history.state && history.state.ra) history.back(); }
   addEventListener('popstate', () => cerrarRes(true)); addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarRes(); }); addEventListener('resize', () => { if (desk()) cerrarRes(); });
@@ -226,7 +226,7 @@
   AMBR.forEach((f, i) => { const e = document.createElement('i'); e.style.backgroundImage = 'url(' + X.M + f + '.jpg)'; $('#ambR').appendChild(e); });
   const ar = $$('#ambR i'); let ak = 0; ar[0].classList.add('on'); setInterval(() => { ar[ak].classList.remove('on'); ak = (ak + 1) % ar.length; ar[ak].classList.add('on'); }, 5200);
   if (desk()) X.rotar($('#resWin'), AMBR, 5200);
-  Reserva.montar($('#raBox'), { onPaso: (n) => { paso = n; dockSync(); $('#reservar').classList.toggle('en-curso', n >= 2); if (panel()) { const b = $('.ra-body', rr); if (b) b.scrollTop = 0; return; } if (n === 1 && !lenis) return; const r = $('#raTop').getBoundingClientRect(); if (r.top < 70 || r.top > innerHeight * .5) ir('#raTop', { offset: desk() ? -(84 + 10) : -14, duration: 1.1 }); setTimeout(refrescar, 700); } });
+  Reserva.montar($('#raBox'), { onPaso: (n) => { paso = n; dockSync(); $('#reservar').classList.toggle('en-curso', n >= 2); rr.classList.toggle('ok', n === 3); if (panel()) { const b = $('.ra-body', rr); if (b) b.scrollTop = 0; return; } if (n === 1 && !lenis) return; const r = $('#raTop').getBoundingClientRect(); if (r.top < 70 || r.top > innerHeight * .5) ir('#raTop', { offset: desk() ? -(84 + 10) : -14, duration: 1.1 }); setTimeout(refrescar, 700); } });
   if (!reduce) {
     gsap.from('.res-p, .res-win', { y: 50, opacity: 0, duration: 1.1, stagger: .12, ease: 'power3.out', scrollTrigger: { trigger: '#reservar', start: 'top 62%' } });
     gsap.from('#raBox', { y: 80, opacity: 0, duration: 1.3, ease: 'power4.out', scrollTrigger: { trigger: '#reservar', start: 'top 60%' } });
