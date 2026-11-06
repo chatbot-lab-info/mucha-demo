@@ -434,3 +434,8 @@ html[data-res=panel] .ra-dia{flex:1 0 54px;width:auto;min-width:54px}
   html[data-res=panel] .ra.c3 .ra-res h3,html[data-res=panel] .ra.c3 .ra-res .serif{font-size:19px!important}
   html[data-res=panel] .ra.c3 .ra-k{font-size:10px}
 }
+
+/* iOS hace zoom al enfocar campos con menos de 16px: todos a 16px en movil */
+@media(max-width:899px){
+  html .ra input,html .ra select,html .ra textarea,html[data-res=panel] .ra-c input,html[data-res=panel] .ra-otra input,.res-r input{font-size:16px!important}
+}
