@@ -26,8 +26,8 @@
   /* ── scroll suave ── */
   let lenis = null;
   if (!reduce && window.Lenis) { lenis = new Lenis({ lerp: .085, wheelMultiplier: .95 }); lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add((t) => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); lenis.stop(); }
-  const salto = document.createElement('div'); salto.className = 'salto'; document.body.appendChild(salto);
-  const ir = (t, o) => { const el = typeof t === 'string' ? $(t) : t; if (!el) return; if (!lenis) { el.scrollIntoView({ behavior: 'smooth' }); return; } const d = Math.abs(el.getBoundingClientRect().top); if (d < innerHeight * .35 || (o && o.duration)) { lenis.scrollTo(el, Object.assign({ duration: 1.1, easing: (x) => 1 - Math.pow(1 - x, 4) }, o || {})); return; } lenis.stop(); gsap.to(salto, { opacity: 1, duration: .2, ease: 'power1.in', onComplete: () => { lenis.start(); lenis.scrollTo(el, Object.assign({ immediate: true, force: true }, o || {})); ScrollTrigger.update(); requestAnimationFrame(() => requestAnimationFrame(() => gsap.to(salto, { opacity: 0, duration: .35, ease: 'power1.out' }))); } }); };
+  let saltando = false; const salto = document.createElement('div'); salto.className = 'salto'; document.body.appendChild(salto);
+  const ir = (t, o) => { const el = typeof t === 'string' ? $(t) : t; if (!el) return; if (!lenis) { el.scrollIntoView({ behavior: 'smooth' }); return; } const d = Math.abs(el.getBoundingClientRect().top); if (d < innerHeight * .35 || (o && o.duration)) { lenis.scrollTo(el, Object.assign({ duration: 1.1, easing: (x) => 1 - Math.pow(1 - x, 4) }, o || {})); return; } lenis.stop(); saltando = true; gsap.to(salto, { opacity: 1, duration: .2, ease: 'power1.in', onComplete: () => { lenis.start(); lenis.scrollTo(el, Object.assign({ immediate: true, force: true }, o || {})); ScrollTrigger.update(); if (typeof sync === 'function') sync(true); requestAnimationFrame(() => requestAnimationFrame(() => { saltando = false; gsap.to(salto, { opacity: 0, duration: .35, ease: 'power1.out' }); })); } }); };
   /* ── reserva en celular: pantalla completa (res=panel), libre, fijo o pausa ── */
   const MR = document.documentElement.dataset.res || 'panel', panel = () => !desk() && MR === 'panel';
   const rr = $('#raTop'); let rAb = false;
@@ -145,7 +145,7 @@
     if (quiere === dk && !forzar) return;
     const on = forzar ? y > 110 : quiere;
     limpiarVuelo();
-    const anim = !reduce && !forzar && !(desk() && nav.classList.contains('oculto')) && !(dock.classList.contains('baja'));
+    const anim = !reduce && !forzar && !saltando && !(desk() && nav.classList.contains('oculto')) && !(dock.classList.contains('baja'));
     const pares = parejas().map(([a, b]) => [$(a), $(b)]);
     const orig = pares.map(([A, B]) => { const o = on ? A : B, r = o.getBoundingClientRect(), cs = getComputedStyle(o); return { r, bg: cs.backgroundColor, col: cs.color, rad: cs.borderRadius, cn: A.cloneNode(true) }; });
     estado(on);
