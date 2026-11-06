@@ -1,0 +1,21 @@
+@font-face{font-family:'Cormorant Garamond';font-weight:400;font-style:normal;font-display:swap;src:url(../../fonts/cormorant-garamond-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Cormorant Garamond';font-weight:500;font-style:normal;font-display:swap;src:url(../../fonts/cormorant-garamond-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'Cormorant Garamond';font-weight:600;font-style:normal;font-display:swap;src:url(../../fonts/cormorant-garamond-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Cormorant Garamond';font-weight:400;font-style:italic;font-display:swap;src:url(../../fonts/cormorant-garamond-latin-400-italic.woff2) format('woff2')}
+@font-face{font-family:'Cormorant Garamond';font-weight:500;font-style:italic;font-display:swap;src:url(../../fonts/cormorant-garamond-latin-500-italic.woff2) format('woff2')}
+@font-face{font-family:'Archivo';font-weight:100 900;font-stretch:62% 125%;font-style:normal;font-display:swap;src:url(../../fonts/archivo-latin-wdth-normal.woff2) format('woff2')}
+@font-face{font-family:'Montserrat';font-weight:100 900;font-style:normal;font-display:swap;src:url(../../fonts/montserrat-latin-wght-normal.woff2) format('woff2')}
+@font-face{font-family:'Delafield';font-weight:400;font-style:normal;font-display:swap;src:url(../../fonts/mrs-saint-delafield-latin-400-normal.woff2) format('woff2')}
+:root{--bur:#A3333F;--bur2:#B83A4B;--crema:#F1EBDF;--crema2:#FBF4EA;--tinta:#120A09;--rosa:#E9A9B0;--ease:cubic-bezier(.22,1,.36,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;color-scheme:dark}
+body{font-family:Montserrat,system-ui,sans-serif;background:var(--tinta);color:var(--crema2);-webkit-font-smoothing:antialiased;line-height:1.45}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+a{color:inherit}
+input,textarea,select{font:inherit;font-size:16px;color:inherit}
+img,video{display:block;max-width:100%}
+.serif{font-family:'Cormorant Garamond',Georgia,serif}
+.caps{font-family:Archivo,sans-serif;font-stretch:125%;text-transform:uppercase;letter-spacing:.18em;font-size:11px;font-weight:500}
+.script{font-family:Delafield,cursive;font-weight:400}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}

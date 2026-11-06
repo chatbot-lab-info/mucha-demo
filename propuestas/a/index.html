@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mucha · Propuesta A — La mesa en el celular</title><meta name="theme-color" content="#120A09">
+<link rel="stylesheet" href="../shared/base.css"><link rel="stylesheet" href="a.css">
+</head><body>
+<div class="bg" id="bg"></div><div class="vel"></div>
+<main class="wrap">
+  <aside class="lado">
+    <img class="lado-m" src="../../img/m-crema.png" alt="" width="54" height="54">
+    <h1 class="serif">Mucha</h1>
+    <p class="script">herencia italiana</p>
+    <p class="lado-t">Panadería, pastelería artesanal y cocina italiana. Reservá tu mesa en segundos.</p>
+    <dl class="lado-d"><div><dt class="caps">Dónde</dt><dd>Bv. Gálvez y Mitre, Santa Fe</dd></div><div><dt class="caps">Cocina</dt><dd>Abierta todo el día</dd></div><div><dt class="caps">Reservas</dt><dd>Solo en el salón</dd></div></dl>
+  </aside>
+  <section class="app" id="app" aria-label="Reservar en Mucha">
+    <!-- 1 · inicio -->
+    <div class="scr on" id="s-home">
+      <div class="hero" id="hero"></div><div class="hero-g"></div>
+      <div class="hero-t"><span class="caps">Restaurante · Panadería</span><b class="serif">MUCHA</b><span class="script">herencia italiana</span></div>
+      <div class="hoja">
+        <div class="tarjeta">
+          <img class="mini" src="../../img/desayuno.jpg" alt="">
+          <div><span class="chip-e" id="estado">Abierto hoy</span><h2 class="serif">Una mesa en Mucha</h2><p>Bv. Gálvez y Mitre · Santa Fe</p></div>
+        </div>
+        <div class="datos2"><div><span>Abre</span><b>7:30</b></div><div><span>Cocina</span><b>Todo el día</b></div><div><span>Cierra</span><b>1:30</b></div></div>
+        <button class="cta" data-go="mesa">Reservar mesa</button>
+        <div class="dos"><button class="sec" data-go="carta">Ver la carta</button><a class="sec" id="lnkMapa" href="#" rel="noopener">Cómo llegar</a></div>
+        <p class="nota-p">Reservas en el salón · vereda y terraza por orden de llegada</p>
+      </div>
+    </div>
+    <!-- 2 · mesa -->
+    <div class="scr" id="s-mesa"><header class="top"><button class="atras" data-back aria-label="Volver">‹</button><div><h2 class="serif">Tu mesa</h2><p>¿Cuándo y cuántos?</p></div></header>
+      <div class="cuerpo">
+        <div class="bloque"><span class="caps">Personas</span><div class="step"><button id="menos" aria-label="Menos">−</button><b id="pers">2</b><button id="mas" aria-label="Más">+</button></div></div>
+        <div class="bloque"><span class="caps">Día</span><div class="dias" id="dias"></div><label class="otra">Otra fecha <input type="date" id="fecha"></label></div>
+        <div class="bloque"><span class="caps">Horario</span><div id="horas" class="horas"></div><p class="err" id="eHora" hidden></p></div>
+      </div>
+      <footer class="pie"><button class="cta" id="aDatos" disabled>Continuar</button></footer>
+    </div>
+    <!-- 3 · carta (escrita, sin fotos) -->
+    <div class="scr" id="s-carta"><header class="top"><button class="atras" data-back aria-label="Volver">‹</button><div><h2 class="serif">La carta</h2><p>Todo lo que sale de la cocina</p></div><button class="lupa" id="lupa" aria-label="Buscar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button></header>
+      <div class="busca" id="busca" hidden><input id="q" type="search" placeholder="Buscar en la carta…" autocomplete="off"></div>
+      <nav class="chips" id="chips" aria-label="Categorías"></nav>
+      <div class="cuerpo" id="cartaW"><div id="lista" class="lista"></div></div>
+      <footer class="pie"><button class="cta" data-go="mesa">Reservar mesa</button></footer>
+    </div>
+    <!-- 4 · datos -->
+    <div class="scr" id="s-datos"><header class="top"><button class="atras" data-back aria-label="Volver">‹</button><div><h2 class="serif">Tus datos</h2><p>Para confirmarte la mesa</p></div></header>
+      <form class="cuerpo" id="form" novalidate>
+        <div class="resumen" id="resumen"></div>
+        <label class="campo"><span class="caps">Nombre</span><input id="nombre" autocomplete="name" placeholder="Tu nombre"><em class="err" hidden></em></label>
+        <label class="campo"><span class="caps">Teléfono</span><input id="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="342 …"><em class="err" hidden></em></label>
+        <label class="campo"><span class="caps">Alergias o restricciones <i>(opcional)</i></span><input id="alergia" placeholder="Ej.: celíaca, sin lactosa"></label>
+        <label class="campo"><span class="caps">Algo más <i>(opcional)</i></span><input id="nota" placeholder="Cumpleaños, sillita de bebé…"></label>
+        <p class="err" id="eForm" hidden></p>
+      </form>
+      <footer class="pie"><button class="cta" id="enviar">Confirmar reserva</button></footer>
+    </div>
+    <!-- 5 · listo -->
+    <div class="scr" id="s-ok"><div class="ok-bg" id="okbg"></div>
+      <div class="ok-c"><span class="tilde"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+        <h2 class="serif">Mesa reservada</h2><p id="okDia"></p><div class="cristal" id="okDatos"></div>
+        <a class="cta cta-c" id="okWa" href="#" rel="noopener">Avisar por WhatsApp</a><a class="sec sec-b" id="okMapa" href="#" rel="noopener">Cómo llegar</a><button class="lnk" id="otra">Hacer otra reserva</button></div>
+    </div>
+    <div class="toast" id="toast" role="status"></div>
+  </section>
+</main>
+<script src="../../js/vendor/gsap.min.js"></script><script src="../../js/config.js?v=2"></script><script src="../../js/demo.js?v=2"></script><script src="../../js/panel.js?v=2"></script><script src="../shared/lib.js"></script><script src="a.js"></script>
+</body></html>
