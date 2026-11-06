@@ -27,12 +27,12 @@
   let lenis = null;
   if (!reduce && window.Lenis) { lenis = new Lenis({ lerp: .085, wheelMultiplier: .95 }); lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add((t) => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); lenis.stop(); }
   const ir = (t, o) => { const el = typeof t === 'string' ? $(t) : t; if (!el) return; lenis ? lenis.scrollTo(el, Object.assign({ duration: 1.7, easing: (x) => 1 - Math.pow(1 - x, 4) }, o || {})) : el.scrollIntoView({ behavior: 'smooth' }); };
-  document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#"]'); if (!a || a.getAttribute('href').length < 2) return; const t = $(a.getAttribute('href')); if (!t) return; e.preventDefault(); ir(t); });
+  document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#"]'); if (!a || a.getAttribute('href').length < 2) return; const t = $(a.getAttribute('href')); if (!t) return; e.preventDefault(); if (a.getAttribute('href') === '#inicio') { lenis ? lenis.scrollTo(0, { duration: 1.7, easing: (x) => 1 - Math.pow(1 - x, 4) }) : scrollTo({ top: 0, behavior: 'smooth' }); return; } ir(t); });
   gsap.to('#prog', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0 } });
 
   /* ── hero: wordmark, ambiente y ventana de capítulos ── */
   const wmI = $('#wm img');
-  const CH = [{ f: 'fachada', l: 'Bv. Gálvez y Mitre' }, { f: 'croissant', l: 'El café' }, { f: 'local', l: 'El salón' }, { f: 'terraza', l: 'La terraza' }];
+  const CH = [{ f: 'fachada', l: 'Bv. Gálvez y Mitre' }, { f: 'croissant', l: 'El café' }, { f: 'local', l: 'El salón' }, { f: 'terraza', l: 'La vereda' }];
   const win = $('#win'), chap = $('#chap'), amb = $('#amb'), DUR = 5.2;
   const hv = CH.map((c, i) => { const v = document.createElement('video'); v.muted = true; v.loop = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = i < 2 ? 'auto' : 'metadata'; v.poster = X.M + c.f + '.jpg'; v.src = X.M + c.f + '.mp4'; v.className = 'rvid'; win.insertBefore(v, $('#chapL')); return v; });
   CH.forEach((c) => { const i = document.createElement('i'); i.style.backgroundImage = 'url(' + X.M + c.f + '.jpg)'; amb.appendChild(i); });
@@ -158,7 +158,7 @@
     { h: '12:30', t: 'Mediodía', d: 'Pastas caseras, risottos y cocina italiana. La cocina está abierta todo el día.', v: 'almuerzo', bg: '#F4DCC0', c: '#3a1a14', k: 'Pastas' },
     { h: '17:00', t: 'La merienda', d: 'Pastelería artesanal, tortas y algo rico para acompañar el café.', v: 'merienda', bg: '#D98C6A', c: '#2a0f0c', k: 'Pasteler' },
     { h: '21:00', t: 'La cena', d: 'Entradas para compartir, principales y una carta de vinos para quedarse.', v: 'cena', bg: '#4a1620', c: '#F1EBDF', k: 'Principales' },
-    { h: '23:30', t: 'Cócteles', d: 'Aperitivos, spritz y tragos de autor en la barra, la vereda y la terraza.', v: 'cocteles', bg: '#180d0c', c: '#F1EBDF', k: 'Cocteles' }
+    { h: '23:30', t: 'Cócteles', d: 'Aperitivos, spritz y tragos de autor en la barra y en la vereda.', v: 'cocteles', bg: '#180d0c', c: '#F1EBDF', k: 'Cocteles' }
   ];
   $('#stack').innerHTML = MOM.map((m, i) => '<article class="mom" style="--i:' + i + ';--bg:' + m.bg + ';--c:' + m.c + '"><div class="mom-v"><img src="img/' + m.v + '.jpg" alt="" decoding="async" loading="lazy"></div><span class="mom-n">' + String(i + 1).padStart(2, '0') + ' / ' + String(MOM.length).padStart(2, '0') + '</span><div class="mom-t"><span class="hora">' + m.h + '</span><div class="hd" aria-hidden="true">' + m.h + '</div><div class="grp"><h3 class="serif">' + esc(m.t) + '</h3><p>' + esc(m.d) + '</p><a class="btn btn-o" href="#carta" data-k="' + esc(m.k) + '">Ver en la carta</a></div></div></article>').join('');
   const cards = $$('.mom');
@@ -197,10 +197,18 @@
     else { const c = cartaD.cats.find((x) => x.nombre === cat); html = c ? '<h3>' + esc(cat) + '</h3><div class="grid">' + c.items.map(fila).join('') + '</div>' : ''; }
     $('#lista').innerHTML = html; $('#qx').hidden = !q; marcarCat();
     if (anim && !reduce) gsap.from('#lista h3, #lista .it', { y: 34, opacity: 0, duration: .8, stagger: .03, ease: 'power3.out', clearProps: 'all' });
-    refrescar();
+    ajustar(); refrescar();
   }
+  function ajustar() {
+    const L = $('#lista'); L.style.removeProperty('--k'); const g = $('.grid', L);
+    if (!desk() || $('#q').value.trim() || !g) { L.classList.remove('fit'); if (g) g.style.columnCount = ''; return; }
+    L.classList.add('fit');
+    const O = [[2, 1.1], [2, 1], [2, .92], [2, .84], [3, 1], [3, .92], [3, .84], [3, .76], [4, .9], [4, .8], [4, .72], [4, .64], [4, .56]];
+    for (const [n, k] of O) { L.style.setProperty('--k', k); g.style.columnCount = n; if (g.scrollWidth <= g.clientWidth + 2) return; }
+  }
+  addEventListener('resize', () => { if (cartaD) ajustar(); }); if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (cartaD) ajustar(); });
   function elegir(k) { const c = cartaD.cats.find((x) => nz(x.nombre).indexOf(nz(k)) >= 0); if (c) { cat = c.nombre; $('#q').value = ''; pintar(true); } }
-  $('#cn').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; cat = b.dataset.c; $('#q').value = ''; pintar(true); if (desk()) { const r = $('.car-r').getBoundingClientRect(); if (r.top < 40) ir('.car-r', { offset: -(parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav')) + 20), duration: 1.2 }); } });
+  $('#cn').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; cat = b.dataset.c; $('#q').value = ''; pintar(true); });
   $('#q').addEventListener('input', () => pintar(false));
   $('#qx').addEventListener('click', () => { $('#q').value = ''; pintar(false); $('#q').focus(); });
   document.addEventListener('click', (e) => { const a = e.target.closest('[data-k]'); if (!a) return; if (cartaD) elegir(a.dataset.k); else pend = a.dataset.k; });

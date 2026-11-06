@@ -292,3 +292,28 @@ main{display:contents}
   .pie-s{font-size:clamp(40px,3.6vw,60px)}
   .hero-txt{padding-bottom:0}
 }
+
+/* v6: carta de escritorio en una sola pantalla */
+.it b{font-size:calc(22px*var(--k,1))}
+@media(min-width:900px){
+  .mq{display:none}
+  .car{height:100svh;min-height:620px;padding:calc(var(--nav) + 4px) 0 calc(56px + 18px);box-sizing:border-box;display:flex}
+  .car-in{width:100%;max-width:1760px;margin:0 auto;padding:0 3vw;display:grid;grid-template-columns:minmax(290px,23%) minmax(0,1fr);gap:2.4vw;height:100%;align-items:stretch}
+  .car-l{position:static;align-self:stretch;height:100%;max-height:none;padding:22px 20px 18px;background:#E5DAC7;border-radius:30px;display:flex;flex-direction:column;min-height:0;box-shadow:inset 0 0 0 1px rgba(42,20,20,.06)}
+  .car-t{padding:0}.car-t .caps{font-size:10px}.car-t h2{font-size:clamp(24px,3.6svh,36px);line-height:1.05;margin-top:8px}
+  .buscar{margin:2svh 0 1.2svh;height:clamp(38px,5.2svh,46px);background:rgba(255,255,255,.55)}
+  .cn{flex:1;min-height:0;overflow:hidden;padding:0;gap:0}
+  .cn button{flex:1 1 0;min-height:0;max-height:54px;padding:0 10px;font-size:clamp(12px,1.75svh,15.5px);gap:12px;border-top:1px solid rgba(42,20,20,.1);align-items:center}
+  .cn button:first-child{border-top:0}
+  .cn button[aria-current=true]{background:var(--tx);color:var(--crema);border-radius:14px;padding-left:10px;border-color:transparent}.cn button[aria-current=true]::before{display:none}.cn button[aria-current=true] i{opacity:.7}
+  .cn button:hover{padding-left:10px;background:rgba(42,20,20,.06)}.cn button[aria-current=true]:hover{background:var(--tx)}
+  .car-r{min-height:0;display:flex;padding:0 .6vw}
+  .lista{padding:0;width:100%;height:100%;display:flex;flex-direction:column;min-height:0;overflow:auto;scrollbar-width:thin}
+  .lista h3{font-size:clamp(30px,4.8svh,56px);margin:0 0 1.4svh;line-height:1}
+  .lista .grid{columns:2;column-gap:2.6vw}
+  .lista.fit{overflow:hidden}.lista.fit .grid{flex:1;min-height:0;width:100%}
+  .it{padding:calc(clamp(7px,1.45svh,15px)*var(--k,1)) 0;gap:2px 16px}
+  .it b{font-size:calc(clamp(17px,2.45svh,25px)*var(--k,1))}
+  .it span{font-size:calc(clamp(11.5px,1.6svh,14px)*var(--k,1))}
+  .it p{font-size:calc(clamp(10.5px,1.5svh,13.5px)*var(--k,1));line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+}
