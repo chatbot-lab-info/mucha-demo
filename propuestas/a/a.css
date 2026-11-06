@@ -330,7 +330,6 @@ main{display:contents}
   html[data-res=fijo] .res{padding-bottom:calc(24svh + 34px)}
   html[data-res=fijo] .ra-nav{position:sticky;bottom:calc(88px + env(safe-area-inset-bottom));z-index:6;background:rgba(18,10,9,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:10px;border-radius:24px;margin-top:16px;border:1px solid rgba(255,255,255,.1)}
 }
-html.ra-on .res{z-index:130!important}
 
 /* confirmación: fondo borroso oscuro, logo y tilde con pulso */
 .ra-bg{position:absolute;inset:0;z-index:0;border-radius:32px;overflow:hidden;opacity:0;pointer-events:none;transition:opacity .9s ease;background:#120A09}
@@ -381,3 +380,6 @@ html.ra-on .res{z-index:130!important}
   html[data-res=panel] .ra-strip{margin:0;padding:0}
   html[data-res=panel] .ra{overflow:hidden}
 }
+
+/* salto entre secciones: cortina corta en vez de scroll largo */
+.salto{position:fixed;inset:0;z-index:95;background:#120A09;opacity:0;pointer-events:none}

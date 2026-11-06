@@ -26,7 +26,8 @@
   /* ── scroll suave ── */
   let lenis = null;
   if (!reduce && window.Lenis) { lenis = new Lenis({ lerp: .085, wheelMultiplier: .95 }); lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add((t) => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); lenis.stop(); }
-  const ir = (t, o) => { const el = typeof t === 'string' ? $(t) : t; if (!el) return; lenis ? lenis.scrollTo(el, Object.assign({ duration: 1.7, easing: (x) => 1 - Math.pow(1 - x, 4) }, o || {})) : el.scrollIntoView({ behavior: 'smooth' }); };
+  const salto = document.createElement('div'); salto.className = 'salto'; document.body.appendChild(salto);
+  const ir = (t, o) => { const el = typeof t === 'string' ? $(t) : t; if (!el) return; if (!lenis) { el.scrollIntoView({ behavior: 'smooth' }); return; } const d = Math.abs(el.getBoundingClientRect().top); if (d < innerHeight * 1.2 || (o && o.duration)) { lenis.scrollTo(el, Object.assign({ duration: 1.1, easing: (x) => 1 - Math.pow(1 - x, 4) }, o || {})); return; } lenis.stop(); gsap.to(salto, { opacity: 1, duration: .2, ease: 'power1.in', onComplete: () => { lenis.start(); lenis.scrollTo(el, Object.assign({ immediate: true, force: true }, o || {})); ScrollTrigger.update(); requestAnimationFrame(() => requestAnimationFrame(() => gsap.to(salto, { opacity: 0, duration: .35, ease: 'power1.out' }))); } }); };
   /* ── reserva en celular: pantalla completa (res=panel), libre, fijo o pausa ── */
   const MR = document.documentElement.dataset.res || 'panel', panel = () => !desk() && MR === 'panel';
   const rr = $('#raTop'); let rAb = false;
@@ -50,7 +51,7 @@
   }
   addEventListener('popstate', () => cerrarRes(true)); addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarRes(); }); addEventListener('resize', () => { if (desk()) cerrarRes(); ubicar(); });
   $('.ra-x', rr).addEventListener('click', () => cerrarRes()); $('.ra-dim', rr).addEventListener('click', () => cerrarRes()); $('.ra-open').addEventListener('click', abrirRes);
-  document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#"]'); if (!a || a.getAttribute('href').length < 2) return; const t = $(a.getAttribute('href')); if (!t) return; e.preventDefault(); if (a.getAttribute('href') === '#reservar' && panel()) { abrirRes(); return; } if (a.getAttribute('href') === '#inicio') { lenis ? lenis.scrollTo(0, { duration: 1.7, easing: (x) => 1 - Math.pow(1 - x, 4) }) : scrollTo({ top: 0, behavior: 'smooth' }); return; } ir(t); });
+  document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#"]'); if (!a || a.getAttribute('href').length < 2) return; const t = $(a.getAttribute('href')); if (!t) return; e.preventDefault(); if (a.getAttribute('href') === '#reservar' && panel()) { abrirRes(); return; } if (a.getAttribute('href') === '#inicio') { lenis ? (scrollY > innerHeight * 1.5 ? ir(document.body, { offset: 0 }) : lenis.scrollTo(0, { duration: 1.1 })) : scrollTo({ top: 0, behavior: 'smooth' }); return; } ir(t); });
   gsap.to('#prog', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0 } });
 
   /* ── hero: wordmark, ambiente y ventana de capítulos ── */
