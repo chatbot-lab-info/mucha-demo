@@ -64,7 +64,7 @@
   }
   function pintar(anim) {
     const q = $('#q').value.trim().toLowerCase(); let html = '';
-    if (q) { S.cartaD.cats.forEach((c) => { const r = c.items.filter((p) => (p.nombre + ' ' + (p.descripcion || '')).toLowerCase().indexOf(q) >= 0); if (r.length) html += '<h3>' + esc(c.nombre) + '</h3>' + r.map(fila).join(''); }); if (!html) html = '<p class="vacio">No encontramos «' + esc(q) + '».</p>'; }
+    if (q) { S.cartaD.cats.forEach((c) => { const cm = c.nombre.toLowerCase().indexOf(q) >= 0; const r = c.items.filter((p) => cm || (p.nombre + ' ' + (p.descripcion || '')).toLowerCase().indexOf(q) >= 0); if (r.length) html += '<h3>' + esc(c.nombre) + '</h3>' + r.map(fila).join(''); }); if (!html) html = '<p class="vacio">No encontramos «' + esc(q) + '».</p>'; }
     else { const c = S.cartaD.cats.find((x) => x.nombre === S.cat); html = c ? c.items.map(fila).join('') : ''; }
     $('#lista').innerHTML = html; $('#cartaW').scrollTop = 0;
     if (anim && window.gsap && !reduce) gsap.from('#lista > *', { y: 22, opacity: 0, duration: .55, stagger: .03, ease: 'power3.out', clearProps: 'all' });
