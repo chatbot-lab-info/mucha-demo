@@ -33,7 +33,8 @@
       if (R.zona) { const z = (d.zonas || []).find((x) => nz(x).indexOf(nz(R.zona)) === 0); if (z) { zona = z; const d2 = await P.llamar('disponibilidad', { fecha, personas, zona }); if (!d2 || !d2.ok) return { err: (d2 && d2.mensaje) || 'No pudimos ver los horarios.' }; d = d2; ZONA = z; try { sessionStorage.setItem('zona:' + (N.PANEL_URL || 'demo'), z); } catch (e) { /* sin almacenamiento */ } } }
     }
     const franjaDe = (h) => FR.find((x) => aMin(h) >= aMin(x.desde) && aMin(h) <= aMin(x.hasta));
-    const libres = (d.horarios || []).filter((h) => !FR.length || franjaDe(h.hora));
+    const ah = new Date(), esHoy = fecha === ah.getFullYear() + '-' + String(ah.getMonth() + 1).padStart(2, '0') + '-' + String(ah.getDate()).padStart(2, '0'), minAhora = ah.getHours() * 60 + ah.getMinutes() + 15;
+    const libres = (d.horarios || []).filter((h) => (!FR.length || franjaDe(h.hora)) && !(esHoy && aMin(h.hora) < minAhora));
     const grupos = FR.length ? FR.map((x) => ({ n: x.nombre, hs: libres.filter((h) => franjaDe(h.hora) === x).map((h) => h.hora) })).filter((g) => g.hs.length) : [{ n: '', hs: libres.map((h) => h.hora) }];
     return { grupos, zona, msg: d.mensaje || '' };
   }

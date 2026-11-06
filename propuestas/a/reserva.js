@@ -38,7 +38,7 @@
     const fit = () => { const B = $('.ra-body'); if (!B || !B.offsetHeight || !root.closest('html') || document.documentElement.dataset.res !== 'panel' || innerWidth >= 900) return; root.classList.remove('c2', 'c3'); if (B.scrollHeight > B.clientHeight + 1) { root.classList.add('c2'); if (B.scrollHeight > B.clientHeight + 1) root.classList.add('c3'); } };
     let fq = 0; const fitQ = () => { cancelAnimationFrame(fq); fq = requestAnimationFrame(fit); };
     if (window.MutationObserver) new MutationObserver(fitQ).observe(root, { childList: true, subtree: true });
-    addEventListener('resize', fitQ); addEventListener('orientationchange', fitQ); addEventListener('ra-fit', fitQ);
+    addEventListener('resize', fitQ); addEventListener('orientationchange', fitQ); addEventListener('ra-fit', () => { fitQ(); if (S.paso === 1 && S.tsH && Date.now() - S.tsH > 45000) horas(); });
     const pasos = () => $$('[data-steps] i').forEach((i) => { const n = +i.dataset.s; i.classList.toggle('on', n === S.paso); i.classList.toggle('hecho', n < S.paso); });
     const mostrar = (n, anim) => {
       S.paso = n; $$('.ra-p').forEach((p) => { p.hidden = +p.dataset.p !== n; });
@@ -66,9 +66,10 @@
       if (S.esp) { S.esp = false; await new Promise((ok) => setTimeout(ok, 220)); if (my !== S.seq) return; }
       const r = await X.horas(S.fecha, S.personas); if (my !== S.seq) return;
       if (r.err) { H.innerHTML = '<p class="ra-vacio">' + esc(r.err) + ' <button type="button" class="ra-lnk" data-reint>Reintentar</button></p>'; return; }
-      S.zona = r.zona;
+      S.zona = r.zona; S.tsH = Date.now();
       if (!r.grupos.length) { H.innerHTML = '<p class="ra-vacio">' + esc(r.msg || 'No hay lugar en el salón ese día.') + ' <a href="' + esc(X.wa('Hola! Quería reservar para ' + S.personas + ' el ' + S.fecha)) + '">Escribinos por WhatsApp</a></p>'; return; }
-      H.innerHTML = r.grupos.map((g) => '<div class="ra-fr">' + (g.n ? '<span class="serif">' + esc(g.n) + '</span>' : '') + '<div>' + g.hs.map((h) => '<button type="button" class="ra-h" aria-pressed="false" data-h="' + esc(h) + '">' + esc(h) + '</button>').join('') + '</div></div>').join('');
+      const av = S.aviso ? '<p class="ra-vacio ra-aviso">' + esc(S.aviso) + '</p>' : ''; S.aviso = '';
+      H.innerHTML = av + r.grupos.map((g) => '<div class="ra-fr">' + (g.n ? '<span class="serif">' + esc(g.n) + '</span>' : '') + '<div>' + g.hs.map((h) => '<button type="button" class="ra-h" aria-pressed="false" data-h="' + esc(h) + '">' + esc(h) + '</button>').join('') + '</div></div>').join('');
       if (window.gsap && !reduce) gsap.from(H.querySelectorAll('.ra-h'), { y: calma() ? 0 : 12, opacity: 0, duration: calma() ? .3 : .5, stagger: calma() ? 0 : .025, ease: 'power2.out', clearProps: 'all' });
     }
     root.addEventListener('click', (e) => {
@@ -96,6 +97,7 @@
       const d = await X.reservar({ nombre: $('[data-nombre]').value.trim(), telefono: $('[data-tel]').value.trim(), personas: S.personas, fecha: S.fecha, hora: S.hora, zona: S.zona, nota: $('[data-nota]').value.trim(), alergia: $('[data-alergia]').value.trim() });
       b.disabled = false; b.textContent = 'Confirmar reserva';
       if (!d || !d.ok) {
+        if (d && (d.code === 'CONFLICTO' || /complet|lugar|cupo/i.test(d.mensaje || '')) && !(d.campos && Object.keys(d.campos).length)) { S.aviso = 'Ese horario se acaba de completar. Elegí otro de los que siguen disponibles.'; S.hora = ''; mostrar(1, false); horas(); return; }
         if (d && d.campos) { if (d.campos.nombre) mal($('[data-nombre]'), d.campos.nombre); if (d.campos.telefono) mal($('[data-tel]'), d.campos.telefono); }
         if (!d || !d.campos || !Object.keys(d.campos).length) { eF.textContent = (d && d.mensaje) || 'No pudimos reservar. Probá de nuevo.'; eF.hidden = false; }
         return;
