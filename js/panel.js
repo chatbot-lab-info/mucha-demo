@@ -11,8 +11,14 @@
   async function llamar(action, payload) {
     if (modoDemo()) return window.MuchaDemo.llamar(action, payload || {});
     const url = N.PANEL_URL + '?action=' + encodeURIComponent(action) + '&payload=' + encodeURIComponent(JSON.stringify(payload || {}));
-    try { return await (await fetch(url)).json(); }
-    catch (e) { return { ok: false, code: 'RED', mensaje: 'No pudimos conectar. Revisá tu internet y probá de nuevo.' }; }
+    const lectura = action === 'disponibilidad' || action === 'carta';
+    for (let i = 0; i < (lectura ? 2 : 1); i++) {
+      try {
+        const ac = window.AbortController ? new AbortController() : null, tm = ac && lectura ? setTimeout(() => ac.abort(), 14000) : 0;
+        const r = await (await fetch(url, ac ? { signal: ac.signal } : undefined)).json(); clearTimeout(tm); return r;
+      } catch (e) { /* se reintenta una vez las lecturas */ }
+    }
+    return { ok: false, code: 'RED', mensaje: 'No pudimos conectar. Revisá tu internet y probá de nuevo.' };
   }
   const guardada = (k) => { try { return JSON.parse(sessionStorage.getItem(k) || 'null'); } catch (e) { return null; } };
   const guardar = (k, v) => { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* sin almacenamiento */ } };

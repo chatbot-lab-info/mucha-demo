@@ -371,3 +371,13 @@ html.ra-on .res{z-index:130!important}
   html[data-res=panel] .res-r.ok .ra-x{top:calc(env(safe-area-inset-top) + 14px)}
   html[data-res=panel] .res-r.ok .ra-top{padding-top:0}
 }
+
+/* v10: el contenido del modal no se ensancha ni se desplaza, y no salta al cargar los horarios */
+.ra-body{grid-template-columns:minmax(0,1fr)}.ra-p,.ra-col,.ra-b,.ra-form,.ra-c{min-width:0}
+.ra-horas{min-height:236px;align-content:start}
+.ra-vacio{font-size:13.5px;line-height:1.5;opacity:.85}.ra-vacio .ra-lnk{display:inline;height:auto;opacity:1;font-weight:600}
+@media(max-width:899px){
+  html[data-res=panel] .ra-body{overflow-x:hidden;touch-action:pan-y}
+  html[data-res=panel] .ra-strip{margin:0;padding:0}
+  html[data-res=panel] .ra{overflow:hidden}
+}

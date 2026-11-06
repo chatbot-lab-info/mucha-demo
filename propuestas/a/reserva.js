@@ -7,7 +7,7 @@
   const corto = (f) => new Date(f + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric', month: 'short' }).replace(/\./g, '');
   function montar(root, op) {
     op = op || {};
-    const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches, calma = () => innerWidth < 900 && document.documentElement.dataset.res === 'panel';
     const hoyIso = X.hoy(), MAXD = 90;
     const S = { personas: 2, fecha: hoyIso, hora: '', zona: '', seq: 0, paso: 1, vy: +hoyIso.slice(0, 4), vm: +hoyIso.slice(5, 7) - 1 };
     const DIAS = X.dias(14);
@@ -40,7 +40,7 @@
       $('[data-atras]').hidden = n !== 2; $('[data-nav]').hidden = n === 3;
       $('[data-main]').textContent = n === 1 ? 'Continuar' : 'Confirmar reserva'; $('[data-main]').disabled = n === 1 && !S.hora;
       if (n === 2) resumen(); pasos(); live();
-      if (window.gsap && !reduce && anim !== false) gsap.from($$('.ra-p:not([hidden]) > *'), { y: 22, opacity: 0, duration: .7, stagger: .08, ease: 'power3.out', clearProps: 'all' });
+      if (window.gsap && !reduce && anim !== false) gsap.from($$('.ra-p:not([hidden]) > *'), { y: calma() ? 0 : 22, opacity: 0, duration: calma() ? .35 : .7, stagger: calma() ? 0 : .08, ease: 'power2.out', clearProps: 'all' });
       if (op.onPaso) op.onPaso(n);
     };
     /* calendario del mes */
@@ -58,17 +58,19 @@
     async function horas() {
       const my = ++S.seq; S.hora = ''; $('[data-main]').disabled = S.paso === 1; live(); const H = $('[data-horas]');
       H.innerHTML = '<span class="ra-esq"></span><span class="ra-esq"></span><span class="ra-esq"></span>';
+      if (S.esp) { S.esp = false; await new Promise((ok) => setTimeout(ok, 220)); if (my !== S.seq) return; }
       const r = await X.horas(S.fecha, S.personas); if (my !== S.seq) return;
-      if (r.err) { H.innerHTML = '<p class="ra-vacio">' + esc(r.err) + '</p>'; return; }
+      if (r.err) { H.innerHTML = '<p class="ra-vacio">' + esc(r.err) + ' <button type="button" class="ra-lnk" data-reint>Reintentar</button></p>'; return; }
       S.zona = r.zona;
       if (!r.grupos.length) { H.innerHTML = '<p class="ra-vacio">' + esc(r.msg || 'No hay lugar en el salón ese día.') + ' <a href="' + esc(X.wa('Hola! Quería reservar para ' + S.personas + ' el ' + S.fecha)) + '">Escribinos por WhatsApp</a></p>'; return; }
       H.innerHTML = r.grupos.map((g) => '<div class="ra-fr">' + (g.n ? '<span class="serif">' + esc(g.n) + '</span>' : '') + '<div>' + g.hs.map((h) => '<button type="button" class="ra-h" aria-pressed="false" data-h="' + esc(h) + '">' + esc(h) + '</button>').join('') + '</div></div>').join('');
-      if (window.gsap && !reduce) gsap.from(H.querySelectorAll('.ra-h'), { y: 12, opacity: 0, duration: .5, stagger: .025, ease: 'power3.out', clearProps: 'all' });
+      if (window.gsap && !reduce) gsap.from(H.querySelectorAll('.ra-h'), { y: calma() ? 0 : 12, opacity: 0, duration: calma() ? .3 : .5, stagger: calma() ? 0 : .025, ease: 'power2.out', clearProps: 'all' });
     }
     root.addEventListener('click', (e) => {
       const t = e.target;
-      if (t.closest('[data-menos]')) { S.personas = Math.max(1, S.personas - 1); $('[data-n]').textContent = S.personas; horas(); }
-      else if (t.closest('[data-mas]')) { S.personas = Math.min(20, S.personas + 1); $('[data-n]').textContent = S.personas; horas(); }
+      if (t.closest('[data-reint]')) { horas(); return; }
+      if (t.closest('[data-menos]')) { S.esp = true; S.personas = Math.max(1, S.personas - 1); $('[data-n]').textContent = S.personas; horas(); }
+      else if (t.closest('[data-mas]')) { S.esp = true; S.personas = Math.min(20, S.personas + 1); $('[data-n]').textContent = S.personas; horas(); }
       else if (t.closest('[data-prev]')) { S.vm--; if (S.vm < 0) { S.vm = 11; S.vy--; } cal(); }
       else if (t.closest('[data-next]')) { S.vm++; if (S.vm > 11) { S.vm = 0; S.vy++; } cal(); }
       else if (t.closest('.ra-dia,.ra-d')) { const b = t.closest('.ra-dia,.ra-d'); if (!b.disabled) setFecha(b.dataset.f); }

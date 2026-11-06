@@ -21,20 +21,32 @@
   const diaLargo = (f) => new Date(f + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
   const nz = (s) => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   const aMin = (h) => { const p = String(h).split(':'); return (+p[0]) * 60 + (+p[1] || 0); };
-  async function horas(fecha, personas) {
+  /* horarios: la zona se recuerda (una sola consulta al panel), los resultados se guardan un minuto y se pueden precargar */
+  const HC = new Map(); let ZONA = ''; try { ZONA = sessionStorage.getItem('zona:' + (N.PANEL_URL || 'demo')) || ''; } catch (e) { /* sin almacenamiento */ }
+  async function horasReal(fecha, personas) {
     const R = N.reservas || {}, FR = R.franjas || [];
-    let d = await P.llamar('disponibilidad', { fecha, personas, zona: '' });
-    if (!d || !d.ok) return { err: (d && d.mensaje) || 'No pudimos ver los horarios.' };
-    let zona = '';
-    if (R.zona) { const z = (d.zonas || []).find((x) => nz(x).indexOf(nz(R.zona)) === 0); if (z) { zona = z; const d2 = await P.llamar('disponibilidad', { fecha, personas, zona }); if (!d2 || !d2.ok) return { err: (d2 && d2.mensaje) || 'No pudimos ver los horarios.' }; d = d2; } }
+    let d = null, zona = '';
+    if (ZONA) { d = await P.llamar('disponibilidad', { fecha, personas, zona: ZONA }); if (d && d.ok) zona = ZONA; else d = null; }
+    if (!d) {
+      d = await P.llamar('disponibilidad', { fecha, personas, zona: '' });
+      if (!d || !d.ok) return { err: (d && d.mensaje) || 'No pudimos ver los horarios.' };
+      if (R.zona) { const z = (d.zonas || []).find((x) => nz(x).indexOf(nz(R.zona)) === 0); if (z) { zona = z; const d2 = await P.llamar('disponibilidad', { fecha, personas, zona }); if (!d2 || !d2.ok) return { err: (d2 && d2.mensaje) || 'No pudimos ver los horarios.' }; d = d2; ZONA = z; try { sessionStorage.setItem('zona:' + (N.PANEL_URL || 'demo'), z); } catch (e) { /* sin almacenamiento */ } } }
+    }
     const franjaDe = (h) => FR.find((x) => aMin(h) >= aMin(x.desde) && aMin(h) <= aMin(x.hasta));
     const libres = (d.horarios || []).filter((h) => !FR.length || franjaDe(h.hora));
     const grupos = FR.length ? FR.map((x) => ({ n: x.nombre, hs: libres.filter((h) => franjaDe(h.hora) === x).map((h) => h.hora) })).filter((g) => g.hs.length) : [{ n: '', hs: libres.map((h) => h.hora) }];
     return { grupos, zona, msg: d.mensaje || '' };
   }
+  function horas(fecha, personas) {
+    const k = fecha + '|' + personas; if (HC.has(k)) return HC.get(k);
+    const p = horasReal(fecha, personas).then((r) => { if (r.err) HC.delete(k); return r; }); HC.set(k, p); setTimeout(() => HC.delete(k), 60000); return p;
+  }
+  /* se llama al cargar la página: así los horarios de hoy y los próximos días ya están cuando se abre la reserva */
+  async function precargar(n) { try { const ds = dias(n || 3); await horas(ds[0].iso, 2); ds.slice(1).forEach((x) => horas(x.iso, 2)); } catch (e) { /* sin red */ } }
   let resId = P.idAleatorio('res');
   async function reservar(f) {
     const d = await P.llamar('crearReserva', { reservaId: resId, nombre: f.nombre, telefono: f.telefono, personas: f.personas, fecha: f.fecha, hora: f.hora, zona: f.zona || undefined, nota: f.nota || undefined, alergia: f.alergia || undefined });
+    HC.clear();
     if (d && !d.ok && (d.code === 'CONFLICTO' || /lugar/.test(d.mensaje || ''))) resId = P.idAleatorio('res');
     return d;
   }
@@ -47,5 +59,5 @@
     show(0); if (vs.length > 1) setInterval(() => { k = (k + 1) % vs.length; show(k); }, ms || 6000);
     return { show };
   }
-  window.Prop = { P, N, M, I, carta, imgDe, horas, reservar, dias, diaLargo, hoy, wa, mapa, rotar, esc: P.esc, pesos: P.pesos, precio: (p) => P.pesos(P.precioDe(p).valor) };
+  window.Prop = { P, N, M, I, carta, imgDe, horas, precargar, reservar, dias, diaLargo, hoy, wa, mapa, rotar, esc: P.esc, pesos: P.pesos, precio: (p) => P.pesos(P.precioDe(p).valor) };
 })();

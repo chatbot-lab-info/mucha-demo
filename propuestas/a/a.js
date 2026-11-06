@@ -40,7 +40,6 @@
     gsap.killTweensOf([sh, $('.ra-dim', rr), $('.ra-x', rr)]);
     gsap.fromTo($('.ra-dim', rr), { opacity: 0 }, { opacity: 1, duration: .5, ease: 'power2.out' });
     gsap.fromTo(sh, { yPercent: 100 }, { yPercent: 0, duration: .95, ease: 'power4.out', clearProps: 'transform' });
-    gsap.from($$('.ra-top, .ra-p:not([hidden]) > *, .ra-nav', rr), { y: 28, opacity: 0, duration: .85, stagger: .07, delay: .3, ease: 'power3.out', clearProps: 'all' });
     gsap.fromTo($('.ra-x', rr), { scale: .3, opacity: 0 }, { scale: 1, opacity: 1, duration: .55, delay: .45, ease: 'back.out(2)', clearProps: 'all' });
   }
   function cerrarRes(pop) {
@@ -76,7 +75,7 @@
   /* ── entrada ── */
   const nav = $('#nav'), dock = $('#dock'); let listo = false;
   function pre() {
-    if (reduce) { $('#load').style.display = 'none'; listo = true; return; }
+    if (reduce) { $('#load').style.display = 'none'; listo = true; if (X.precargar) X.precargar(3); return; }
     gsap.set(wmI, { yPercent: 118 }); gsap.set(['#kick', '#sub', '#lead'], { opacity: 0, y: 26 }); gsap.set('#acc', { y: 60, opacity: 0 }); gsap.set('.win', { clipPath: 'inset(100% 0% 0% 0%)' }); gsap.set('.hero-win', { scale: 1.06 }); gsap.set('#nav', { opacity: 0, y: -50 }); gsap.set('.desliza', { opacity: 0 });
   }
   function entrar() {
@@ -93,7 +92,7 @@
       .to('#acc', { y: 0, opacity: 1, duration: 1.3, ease: 'power4.out', clearProps: 'transform' }, 2.55)
       .to('#nav', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, 2.7)
       .to('.desliza', { opacity: 1, duration: 1 }, 3.1)
-      .add(() => { listo = true; sync(true); }, 3);
+      .add(() => { listo = true; sync(true); if (X.precargar) X.precargar(3); }, 3);
   }
   pre();
   const fuentes = document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 1800))]) : Promise.resolve();
