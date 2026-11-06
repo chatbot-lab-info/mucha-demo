@@ -7,7 +7,7 @@
     const DIAS = X.dias(7);
     root.classList.add('rv'); 
     root.innerHTML =
-      '<div class="rv-p" data-p="1"><div class="rv-b"><span class="rv-k">Personas</span><div class="rv-step"><button type="button" data-m aria-label="Menos">−</button><b data-n>2</b><button type="button" data-M aria-label="Más">+</button></div></div>' +
+      '<div class="rv-p" data-p="1"><div class="rv-b"><span class="rv-k">Personas</span><div class="rv-step"><button type="button" data-menos aria-label="Menos">−</button><b data-n>2</b><button type="button" data-mas aria-label="Más">+</button></div></div>' +
       '<div class="rv-b"><span class="rv-k">Día</span><div class="rv-dias">' + DIAS.map((d) => '<button type="button" class="rv-dia" data-f="' + d.iso + '" aria-pressed="' + (d.iso === S.fecha) + '"><span>' + esc(d.dow) + '</span><b>' + d.num + '</b><span>' + esc(d.mes) + '</span></button>').join('') + '</div><label class="rv-otra">Otra fecha <input type="date" data-fecha min="' + X.hoy() + '" value="' + S.fecha + '"></label></div>' +
       '<div class="rv-b"><span class="rv-k">Horario</span><div class="rv-horas" data-horas></div></div></div>' +
       '<form class="rv-p" data-p="2" novalidate hidden><div class="rv-res" data-res></div>' +
@@ -33,8 +33,8 @@
     }
     root.addEventListener('click', (e) => {
       const t = e.target;
-      if (t.closest('[data-m]')) { S.personas = Math.max(1, S.personas - 1); $('[data-n]').textContent = S.personas; horas(); }
-      else if (t.closest('[data-M]')) { S.personas = Math.min(20, S.personas + 1); $('[data-n]').textContent = S.personas; horas(); }
+      if (t.closest('[data-menos]')) { S.personas = Math.max(1, S.personas - 1); $('[data-n]').textContent = S.personas; horas(); }
+      else if (t.closest('[data-mas]')) { S.personas = Math.min(20, S.personas + 1); $('[data-n]').textContent = S.personas; horas(); }
       else if (t.closest('.rv-dia')) setFecha(t.closest('.rv-dia').dataset.f);
       else if (t.closest('[data-h]')) { const b = t.closest('[data-h]'); S.hora = b.dataset.h; $$('.rv-h').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); $('[data-main]').disabled = false; if (op.onHora) op.onHora(S); }
       else if (t.closest('[data-atras]')) mostrar(1);
