@@ -30,11 +30,27 @@
   /* ── reserva en celular: pantalla completa (res=panel), libre, fijo o pausa ── */
   const MR = document.documentElement.dataset.res || 'panel', panel = () => !desk() && MR === 'panel';
   const rr = $('#raTop'); let rAb = false;
-  rr.insertAdjacentHTML('afterbegin', '<button class="ra-x" type="button" aria-label="Cerrar">×</button>'); rr.insertAdjacentHTML('afterbegin', '<div class="ra-bg" aria-hidden="true"></div>'); rr.setAttribute('data-lenis-prevent', '');
-  function abrirRes() { if (rAb) return; rAb = true; rr.classList.add('abierto'); document.documentElement.classList.add('ra-on'); if (lenis) lenis.stop(); try { history.pushState({ ra: 1 }, ''); } catch (e) {} }
-  function cerrarRes(pop) { if (!rAb) return; rAb = false; rr.classList.remove('abierto'); document.documentElement.classList.remove('ra-on'); if (lenis) lenis.start(); if (!pop && history.state && history.state.ra) history.back(); }
-  addEventListener('popstate', () => cerrarRes(true)); addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarRes(); }); addEventListener('resize', () => { if (desk()) cerrarRes(); });
-  $('.ra-x', rr).addEventListener('click', () => cerrarRes()); $('.ra-open').addEventListener('click', abrirRes);
+  rr.insertAdjacentHTML('afterbegin', '<button class="ra-x" type="button" aria-label="Cerrar">×</button>'); rr.insertAdjacentHTML('afterbegin', '<div class="ra-bg" aria-hidden="true"></div><div class="ra-dim" aria-hidden="true"></div>'); rr.setAttribute('data-lenis-prevent', '');
+  function ubicar() { const q = panel(); if (q && rr.parentNode !== document.body) document.body.appendChild(rr); else if (!q && rr.parentNode === document.body) { const w = $('.res-in'); if (w) w.appendChild(rr); } }
+  ubicar();
+  const hi = document.documentElement;
+  function abrirRes() {
+    if (rAb) return; rAb = true; ubicar(); rr.classList.add('abierto'); hi.classList.add('ra-on'); if (lenis) lenis.stop(); try { history.pushState({ ra: 1 }, ''); } catch (e) {}
+    if (reduce) return; const sh = $('#raBox', rr);
+    gsap.killTweensOf([sh, $('.ra-dim', rr), $('.ra-x', rr)]);
+    gsap.fromTo($('.ra-dim', rr), { opacity: 0 }, { opacity: 1, duration: .5, ease: 'power2.out' });
+    gsap.fromTo(sh, { yPercent: 100 }, { yPercent: 0, duration: .95, ease: 'power4.out', clearProps: 'transform' });
+    gsap.from($$('.ra-top, .ra-p:not([hidden]) > *, .ra-nav', rr), { y: 28, opacity: 0, duration: .85, stagger: .07, delay: .3, ease: 'power3.out', clearProps: 'all' });
+    gsap.fromTo($('.ra-x', rr), { scale: .3, opacity: 0 }, { scale: 1, opacity: 1, duration: .55, delay: .45, ease: 'back.out(2)', clearProps: 'all' });
+  }
+  function cerrarRes(pop) {
+    if (!rAb) return; rAb = false; hi.classList.remove('ra-on');
+    const fin = () => { rr.classList.remove('abierto'); if (lenis) lenis.start(); };
+    if (reduce) fin(); else { const sh = $('#raBox', rr); gsap.to($('.ra-dim', rr), { opacity: 0, duration: .5 }); gsap.to(sh, { yPercent: 105, duration: .6, ease: 'power3.in', onComplete: () => { fin(); gsap.set(sh, { clearProps: 'transform' }); } }); }
+    if (!pop && history.state && history.state.ra) history.back();
+  }
+  addEventListener('popstate', () => cerrarRes(true)); addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarRes(); }); addEventListener('resize', () => { if (desk()) cerrarRes(); ubicar(); });
+  $('.ra-x', rr).addEventListener('click', () => cerrarRes()); $('.ra-dim', rr).addEventListener('click', () => cerrarRes()); $('.ra-open').addEventListener('click', abrirRes);
   document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#"]'); if (!a || a.getAttribute('href').length < 2) return; const t = $(a.getAttribute('href')); if (!t) return; e.preventDefault(); if (a.getAttribute('href') === '#reservar' && panel()) { abrirRes(); return; } if (a.getAttribute('href') === '#inicio') { lenis ? lenis.scrollTo(0, { duration: 1.7, easing: (x) => 1 - Math.pow(1 - x, 4) }) : scrollTo({ top: 0, behavior: 'smooth' }); return; } ir(t); });
   gsap.to('#prog', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0 } });
 
@@ -229,7 +245,7 @@
   Reserva.montar($('#raBox'), { onPaso: (n) => { paso = n; dockSync(); $('#reservar').classList.toggle('en-curso', n >= 2); rr.classList.toggle('ok', n === 3); if (panel()) { const b = $('.ra-body', rr); if (b) b.scrollTop = 0; return; } if (n === 1 && !lenis) return; const r = $('#raTop').getBoundingClientRect(); if (r.top < 70 || r.top > innerHeight * .5) ir('#raTop', { offset: desk() ? -(84 + 10) : -14, duration: 1.1 }); setTimeout(refrescar, 700); } });
   if (!reduce) {
     gsap.from('.res-p, .res-win', { y: 50, opacity: 0, duration: 1.1, stagger: .12, ease: 'power3.out', scrollTrigger: { trigger: '#reservar', start: 'top 62%' } });
-    gsap.from('#raBox', { y: 80, opacity: 0, duration: 1.3, ease: 'power4.out', scrollTrigger: { trigger: '#reservar', start: 'top 60%' } });
+    if (!panel()) gsap.from('#raBox', { y: 80, opacity: 0, duration: 1.3, ease: 'power4.out', clearProps: 'all', scrollTrigger: { trigger: '#reservar', start: 'top 60%' } });
     gsap.fromTo('#resWin', { yPercent: 6 }, { yPercent: -6, ease: 'none', scrollTrigger: { trigger: '#reservar', start: 'top bottom', end: 'bottom top', scrub: true } });
   }
 
