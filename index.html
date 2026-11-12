@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="css/piel.css?v=5">
 <link rel="stylesheet" href="css/web.css?v=6">
 <script>/* el QR de cada mesa apunta a esta misma dirección con ?mesa=CÓDIGO: se lo manda a la app de mesa */
-(function(){var m=location.search.match(/[?&](?:mesa|t)=([A-Za-z0-9]+)/);if(m)location.replace('mesa/?mesa='+m[1]+(/[?&]demo=1/.test(location.search)?'&demo=1':''))})();</script>
+(function(){var m=location.search.match(/[?&](?:mesa|t)=([A-Za-z0-9]+)/);if(m){location.replace('mesa/?mesa='+m[1]+(/[?&]demo=1/.test(location.search)?'&demo=1':''));return}if(!/[?&]anterior=1/.test(location.search))location.replace('propuestas/a/'+location.search+location.hash)})();</script>
 <script>/* tema elegido (día / noche). Sin elección = recorrido del día. Se aplica antes de pintar para que no parpadee */
 (function(){try{var t=localStorage.getItem('mucha-tema');if(t==='dia'||t==='noche')document.documentElement.dataset.fijo=t;if(t==='dia')document.documentElement.dataset.tema='dia'}catch(e){}})();</script>
 <script>/* movimiento: solo si la persona no pidió "reducir animaciones"; si algo falla, el sitio se ve igual (versión estática) */

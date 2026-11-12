@@ -3,6 +3,7 @@
 Sitio estático (HTML/CSS/JS) para el restó Mucha (Boulevard y Mitre, Santa Fe). Se publica con GitHub Pages.
 
 ## Qué hay
+- La dirección raíz (`/mucha-demo/`) abre la web elegida (propuesta A, `propuestas/a/`). La versión anterior se ve con `?anterior=1`. Los QR de mesa (`?mesa=CÓDIGO`) siguen yendo a `mesa/`.
 - `index.html` — web motion: recorrido día → noche (desayuno, almuerzo, merienda, cena, cócteles), carta, reservas, contacto.
 - `mesa/index.html` — app QR de mesa (siempre en tema noche).
 - `js/config.js` — datos del negocio y `PANEL_URL` (URL /exec del panel). Si está vacío o con `?demo=1`, usa `js/demo.js`.
