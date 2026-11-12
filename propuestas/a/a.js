@@ -82,15 +82,15 @@
   function entrar() {
     const L = $('#load'); if (reduce || !L) { if (lenis) lenis.start(); return; }
     const tl = gsap.timeline(), K = Math.hypot(innerWidth, innerHeight) / 2 * 1.08;
-    gsap.set(L, { '--h': 0 }); gsap.set('#load .load-f', { '--r': '0px' });
+    gsap.set(L, { '--h': 0 }); let LH = L.querySelector('.load-h'); if (!LH) { LH = document.createElement('div'); LH.className = 'load-h'; L.insertBefore(LH, L.querySelector('.load-w')); } gsap.set('#load .load-f', { '--r': '0px' });
     tl.fromTo('#load .load-b', { opacity: 0, scale: .55 }, { opacity: 1, scale: 1, duration: .85, ease: 'back.out(1.7)' }, 0)
       .to(L, { '--p': 1, duration: 1.1, ease: 'power2.inOut' }, .2)
       .fromTo('#load .load-f', { '--r': '20px' }, { '--r': K + 'px', duration: .85, ease: 'power3.in' }, 1.35)
       .to('#load .load-b', { opacity: 0, duration: .25 }, 1.9)
-      .set(L, { backgroundColor: '#A33340' }, 2.2)
+      .set(L, { backgroundColor: 'transparent' }, 2.2).set('#load .load-f', { display: 'none' }, 2.2).set(LH, { opacity: 1, '--hr': '0px' }, 2.2)
       .fromTo('#load .load-w', { opacity: 0, y: 14, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: .6, ease: 'power3.out' }, 2.05)
       .to('#load .load-w', { opacity: 0, scale: 1.12, duration: .5, ease: 'power2.in' }, 2.65)
-      .to(L, { '--h': 108, duration: 1.4, ease: 'power4.inOut', onComplete: () => { L.style.display = 'none'; if (lenis) lenis.start(); } }, 2.55)
+      .to(LH, { '--hr': K + 'px', duration: 1.4, ease: 'power4.inOut', onComplete: () => { L.style.display = 'none'; if (lenis) lenis.start(); } }, 2.55)
       .add(() => { if (desk()) gsap.to('.win', { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.3, ease: 'power4.inOut' }); }, 2.6)
       .to('.hero-win', { scale: 1, duration: 2.2, ease: 'power3.out' }, 2.55)
       .to(wmI, { yPercent: 0, duration: 1.5, stagger: .09, ease: 'power4.out' }, 3.15)

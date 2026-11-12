@@ -441,7 +441,9 @@ html[data-res=panel] .ra-dia{flex:1 0 54px;width:auto;min-width:54px}
 }
 
 /* carga: disco rojo con la M -> se expande -> logo -> el hero se abre desde el centro */
-.load{overflow:hidden;--h:0;-webkit-mask:radial-gradient(circle at 50% 50%,transparent calc(var(--h)*1%),#000 calc(var(--h)*1% + 1px));mask:radial-gradient(circle at 50% 50%,transparent calc(var(--h)*1%),#000 calc(var(--h)*1% + 1px))}
+.load{overflow:hidden}
+.load-h{position:absolute;inset:0;--hr:0px;opacity:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(163,51,64,0) calc(var(--hr) - 1px),#A33340 calc(var(--hr) + 1px))}
+.load .load-w{z-index:2}
 .load .load-b{opacity:0}
 .load-f{position:absolute;inset:0;--r:0px;background:radial-gradient(circle at 50% 50%,#A33340 calc(var(--r) - 1px),rgba(163,51,64,0) calc(var(--r) + 1px));pointer-events:none}
 .load .load-w{position:absolute;left:50%;top:50%;width:min(62vw,320px);height:auto;transform:translate(-50%,-50%);opacity:0}
