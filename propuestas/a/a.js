@@ -82,12 +82,12 @@
   function entrar() {
     const L = $('#load'); if (reduce || !L) { if (lenis) lenis.start(); return; }
     const tl = gsap.timeline(), K = Math.hypot(innerWidth, innerHeight) / 2 * 1.08;
-    gsap.set(L, { '--h': 0 }); let LH = L.querySelector('.load-h'); if (!LH) { LH = document.createElement('div'); LH.className = 'load-h'; L.insertBefore(LH, L.querySelector('.load-w')); } const LF = L.querySelector('.load-f'), ST = { r: 30, h: 0 }; LF.style.visibility = 'hidden'; LH.style.visibility = 'hidden';
+    gsap.set(L, { '--h': 0 }); let LH = L.querySelector('.load-h'); if (!LH) { LH = document.createElement('div'); LH.className = 'load-h'; L.insertBefore(LH, L.querySelector('.load-w')); } const LF = L.querySelector('.load-f'), ST = { r: 53, h: 0 }; LF.style.visibility = 'hidden'; LH.style.visibility = 'hidden';
     tl.fromTo('#load .load-b', { opacity: 0, scale: .55 }, { opacity: 1, scale: 1, duration: .85, ease: 'back.out(1.7)' }, 0)
       .to(L, { '--p': 1, duration: 1.1, ease: 'power2.inOut' }, .2)
-      .add(() => { LF.style.visibility = 'visible'; LF.style.setProperty('--r', '30px'); }, 1.35)
+      .add(() => { LF.style.visibility = 'visible'; LF.style.setProperty('--r', '53px'); }, 1.35)
       .to(ST, { r: K, duration: .85, ease: 'power3.in', onUpdate: () => LF.style.setProperty('--r', ST.r + 'px') }, 1.35)
-      .to('#load .load-b', { opacity: 0, duration: .25 }, 1.9)
+      .to('#load .load-b', { opacity: 0, duration: .3 }, 1.7)
       .add(() => { L.style.backgroundColor = 'transparent'; LF.style.display = 'none'; LH.style.visibility = 'visible'; LH.style.opacity = 1; LH.style.setProperty('--hr', '0px'); }, 2.2)
       .fromTo('#load .load-w', { opacity: 0, y: 14, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: .6, ease: 'power3.out' }, 2.05)
       .to('#load .load-w', { opacity: 0, scale: 1.12, duration: .5, ease: 'power2.in' }, 2.65)
