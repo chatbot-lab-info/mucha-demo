@@ -145,23 +145,23 @@
   const limpiarVuelo = () => { vol.forEach((f) => { f.t.kill(); f.c.remove(); f.b.classList.remove('fly'); }); vol = []; };
   function estado(on) { dk = on; document.body.classList.toggle('dk', on); dock.classList.toggle('ver', on); }
   /* móvil: los botones de la portada viajan por encima de la tarjeta crema (la acompañan al subir) y recién después se deslizan al menú */
-  const accEl = $('#acc'); let accBase = null, accPh = null;
-  function accMedir() {
-    if (!accEl || desk() || reduce) { if (accEl) { accEl.style.cssText = accEl.style.cssText.replace(/position:[^;]*;|left:[^;]*;|top:[^;]*;|width:[^;]*;|z-index:[^;]*;|translate:[^;]*;/g, ''); } if (accPh) { accPh.remove(); accPh = null; } accBase = null; return; }
-    if (!accPh) { accPh = document.createElement('div'); accEl.parentNode.insertBefore(accPh, accEl); }
-    accPh.style.height = '56px'; accPh.style.width = '100%';
-    const r = accPh.getBoundingClientRect(), sy = window.scrollY;
-    accBase = { left: r.left, top: r.top + (sy < 5 ? 0 : sy * 0), w: r.width, h: r.height };
-    Object.assign(accEl.style, { position: 'fixed', left: accBase.left + 'px', top: accBase.top + 'px', width: accBase.w + 'px', zIndex: 40 });
-  }
-  const accRider = () => {
-    if (!accBase || window.scrollY > 600) return;
-    const m = $('#man'); if (!m) return;
-    const ty = Math.min(0, m.getBoundingClientRect().top - 12 - (accBase.top + accBase.h));
-    accEl.style.translate = '0 ' + ty + 'px';
-  };
-  if (accEl) { accMedir(); addEventListener('resize', () => { if (scrollY < 5) accMedir(); }); gsap.ticker.add(accRider); }
-  function sync(forzar) {
+  const accEl = $('#acc'); let accPh = null, accOn = false, accLast = '';
+function accLimpiar() { if (!accEl) return; accEl.style.cssText = accEl.style.cssText.replace(/(position|left|top|width|z-index|translate)\s*:[^;]*;?/g, ''); if (accPh) { accPh.remove(); accPh = null; } accOn = false; accLast = ''; }
+function accRider() {
+  if (!accEl) return;
+  if (desk() || reduce) { if (accOn || accPh) accLimpiar(); return; }
+  if (!accPh) { accPh = document.createElement('div'); accPh.style.cssText = 'height:56px;width:100%;pointer-events:none'; accEl.parentNode.insertBefore(accPh, accEl); }
+  const r = accPh.getBoundingClientRect(); if (!r.width) return;
+  const m = $('#man'); let ty = 0;
+  if (m && window.scrollY < 800) ty = Math.min(0, m.getBoundingClientRect().top - 12 - r.bottom);
+  const k = r.left + '|' + r.top + '|' + r.width + '|' + ty;
+  if (k === accLast) return; accLast = k;
+  accEl.style.position = 'fixed'; accEl.style.zIndex = 40;
+  accEl.style.left = r.left + 'px'; accEl.style.top = r.top + 'px'; accEl.style.width = r.width + 'px';
+  accEl.style.translate = '0 ' + ty + 'px'; accOn = true;
+}
+if (accEl) gsap.ticker.add(accRider);
+function sync(forzar) {
     if (!listo) return;
     const y = window.scrollY, quiere = desk() ? (dk ? y > 40 : y > 110) : (dk ? y > 330 : y > 400);
     if (quiere === dk && !forzar) return;
