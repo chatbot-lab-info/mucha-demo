@@ -70,3 +70,14 @@
 .m-acc{transition:border-color .35s,background-color .35s,transform .3s var(--ease)}
 .est i{transition:background-color .5s}
 @media(prefers-reduced-motion:reduce){.barra-m .ind{transition:none}.flota{transition:none}}
+
+/* estado de cada plato: punto y cartelito de color (recibido rojo, en preparación amarillo, listo verde) */
+.est{--ec:var(--tenue)}
+.est[data-e=por_confirmar]{--ec:#E8B93C}
+.est[data-e=nuevo]{--ec:#D8505F}
+.est[data-e=preparando]{--ec:#F2C230}
+.est[data-e=listo]{--ec:#4FC47A}
+.est[data-e=entregado]{--ec:#8A817A}
+.est i{background:var(--ec)!important}
+.est[data-e=preparando] i{animation:late 1.4s infinite}
+.est small{justify-self:start;display:inline-block;padding:4px 12px;border-radius:999px;font-size:12.5px;font-weight:600;letter-spacing:.04em;color:var(--ec);background:color-mix(in srgb,var(--ec) 14%,transparent);border:1px solid color-mix(in srgb,var(--ec) 55%,transparent)}
