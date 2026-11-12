@@ -446,3 +446,5 @@ html[data-res=panel] .ra-dia{flex:1 0 54px;width:auto;min-width:54px}
 .load-f{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:#A33340;transform:scale(0);will-change:transform}
 .load .load-w{position:absolute;left:50%;top:50%;width:min(62vw,320px);height:auto;transform:translate(-50%,-50%);opacity:0}
 .ra-aviso{color:#ff9aa4;margin-bottom:10px}
+
+.mq-t b{width:.42em;height:.42em;font-size:inherit;opacity:1;background:url(../../img/estrella-bordo-256.png) center/contain no-repeat;flex:none}

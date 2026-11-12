@@ -204,7 +204,7 @@
 
   /* ── marquee ── */
   const MQ = ['Panadería', 'Pastelería artesanal', 'Pastas caseras', 'Focaccias', 'Cócteles', 'Cocina italiana'];
-  const mqH = MQ.map((m) => '<span>' + esc(m) + '<b>✦</b></span>').join('');
+  const mqH = MQ.map((m) => '<span>' + esc(m) + '<b></b></span>').join('');
   $('#mq').innerHTML = '<div style="display:inline-flex">' + mqH + '</div><div style="display:inline-flex">' + mqH + '</div>';
   if (!reduce) { const t = gsap.to('#mq', { xPercent: -50, repeat: -1, duration: 40, ease: 'none' }); ScrollTrigger.create({ trigger: '.mq', start: 'top bottom', end: 'bottom top', onUpdate: (s) => { gsap.to(t, { timeScale: 1 + Math.min(Math.abs(s.getVelocity()) / 240, 7) * s.direction, duration: .3, overwrite: true }); gsap.to(t, { timeScale: s.direction, duration: 1.4, delay: .3, overwrite: false }); } }); }
 
