@@ -81,11 +81,11 @@
   }
   function entrar() {
     const L = $('#load'); if (reduce || !L) { if (lenis) lenis.start(); return; }
-    const tl = gsap.timeline(), K = Math.hypot(innerWidth, innerHeight) / 40 * 1.08;
-    gsap.set(L, { '--h': 0 });
+    const tl = gsap.timeline(), K = Math.hypot(innerWidth, innerHeight) / 2 * 1.08;
+    gsap.set(L, { '--h': 0 }); gsap.set('#load .load-f', { '--r': '0px' });
     tl.fromTo('#load .load-b', { opacity: 0, scale: .55 }, { opacity: 1, scale: 1, duration: .85, ease: 'back.out(1.7)' }, 0)
       .to(L, { '--p': 1, duration: 1.1, ease: 'power2.inOut' }, .2)
-      .to('#load .load-f', { scale: K, duration: .85, ease: 'power3.in' }, 1.35)
+      .fromTo('#load .load-f', { '--r': '20px' }, { '--r': K + 'px', duration: .85, ease: 'power3.in' }, 1.35)
       .to('#load .load-b', { opacity: 0, duration: .25 }, 1.9)
       .set(L, { backgroundColor: '#A33340' }, 2.2)
       .fromTo('#load .load-w', { opacity: 0, y: 14, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: .6, ease: 'power3.out' }, 2.05)
@@ -144,12 +144,29 @@
   const parejas = () => desk() ? [['#acc .btn-r', '#nav .btn-c'], ['#acc .btn-g', '#navP a[href="#carta"]']] : [['#acc .btn-r', '#dock a[data-s="reservar"]'], ['#acc .btn-g', '#dock a[data-s="carta"]']];
   const limpiarVuelo = () => { vol.forEach((f) => { f.t.kill(); f.c.remove(); f.b.classList.remove('fly'); }); vol = []; };
   function estado(on) { dk = on; document.body.classList.toggle('dk', on); dock.classList.toggle('ver', on); }
+  /* móvil: los botones de la portada viajan por encima de la tarjeta crema (la acompañan al subir) y recién después se deslizan al menú */
+  const accEl = $('#acc'); let accBase = null, accPh = null;
+  function accMedir() {
+    if (!accEl || desk() || reduce) { if (accEl) { accEl.style.cssText = accEl.style.cssText.replace(/position:[^;]*;|left:[^;]*;|top:[^;]*;|width:[^;]*;|z-index:[^;]*;|translate:[^;]*;/g, ''); } if (accPh) { accPh.remove(); accPh = null; } accBase = null; return; }
+    if (!accPh) { accPh = document.createElement('div'); accEl.parentNode.insertBefore(accPh, accEl); }
+    accPh.style.height = '56px'; accPh.style.width = '100%';
+    const r = accPh.getBoundingClientRect(), sy = window.scrollY;
+    accBase = { left: r.left, top: r.top + (sy < 5 ? 0 : sy * 0), w: r.width, h: r.height };
+    Object.assign(accEl.style, { position: 'fixed', left: accBase.left + 'px', top: accBase.top + 'px', width: accBase.w + 'px', zIndex: 40 });
+  }
+  const accRider = () => {
+    if (!accBase || window.scrollY > 600) return;
+    const m = $('#man'); if (!m) return;
+    const ty = Math.min(0, m.getBoundingClientRect().top - 12 - (accBase.top + accBase.h));
+    accEl.style.translate = '0 ' + ty + 'px';
+  };
+  if (accEl) { accMedir(); addEventListener('resize', () => { if (scrollY < 5) accMedir(); }); gsap.ticker.add(accRider); }
   function sync(forzar) {
     if (!listo) return;
-    const y = window.scrollY, quiere = dk ? y > 40 : y > 110;
+    const y = window.scrollY, quiere = desk() ? (dk ? y > 40 : y > 110) : (dk ? y > 330 : y > 400);
     if (quiere === dk && !forzar) return;
-    const on = forzar ? y > 110 : quiere;
-    limpiarVuelo();
+    const on = forzar ? y > (desk() ? 110 : 400) : quiere;
+    limpiarVuelo(); if (typeof accRider === 'function') accRider();
     const anim = !reduce && !forzar && !saltando && !(desk() && nav.classList.contains('oculto')) && !(dock.classList.contains('baja'));
     const pares = parejas().map(([a, b]) => [$(a), $(b)]);
     const orig = pares.map(([A, B]) => { const o = on ? A : B, r = o.getBoundingClientRect(), cs = getComputedStyle(o); return { r, bg: cs.backgroundColor, col: cs.color, rad: cs.borderRadius, cn: A.cloneNode(true) }; });
